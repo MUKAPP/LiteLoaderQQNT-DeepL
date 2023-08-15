@@ -1,21 +1,21 @@
 {
     "manifest_version": 3,
     "type": "extension",
-    "name": "插件模板",
-    "slug": "plugin_template",
-    "description": "LiteLoaderQQNT的插件模板",
-    "version": "0.1.0",
-    "thumbnail": "./icon.png",
+    "name": "DeepL",
+    "slug": "deepl_plugin",
+    "description": "将 DeepL 翻译接入你的 QQNT",
+    "version": "1.0.0",
+    "thumbnail": "./res/icon.png",
     "author": {
-        "name": "沫烬染",
-        "link": "https://github.com/mo-jinran"
+        "name": "MUKAPP",
+        "link": "https://github.com/MUKAPP"
     },
     "repository": {
-        "repo": "mo-jinran/LiteLoaderQQNT-Plugin-Template",
+        "repo": "MUKAPP/LiteLoaderQQNT-DeepL",
         "branch": "main",
         "use_release": {
             "tag": "latest",
-            "name": "Plugin-Template.zip"
+            "name": "LiteLoaderQQNT-DeepL.zip"
         }
     },
     "platform": [
