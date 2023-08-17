@@ -192,6 +192,7 @@ async function onLoad() {
         
         .translation-title {
             font-size: 16px;
+            margin-right: 16px;
         }
 
         #translation-result {
@@ -199,19 +200,20 @@ async function onLoad() {
             top: 0;
             left: 0;
             width: auto;
-            background-color: var(--bg_middle_standard);
+            background-color: var(--bg_bottom_standard);
             padding: 16px;
             display: none;
             border-radius: 8px;
             margin: 8px 16px;
+            box-shadow: 0 4px 12px 0px #00000021;
         }
         
-        #translation-text{
+        #translation-text {
             font-size: 14px;
             margin-top: 8px;
         }
 
-        .translate-bar{
+        .translate-bar {
             width: auto;
             display: flex;
             text-align: right;
@@ -220,7 +222,7 @@ async function onLoad() {
             align-items: center;
         }
         
-        #copy-button{
+        #copy-button {
             background: var(--brand_standard);
             padding: 4px 12px;
             color: white;
@@ -228,8 +230,8 @@ async function onLoad() {
             border-radius: 8px;
             margin-right: 4px;
         }
-        
-        #cancel-button{
+
+        #cancel-button {
             background-color: transparent;
             color: var(--text_primary);
             border: 1px solid var(--fill_standard_primary);
@@ -246,12 +248,29 @@ async function onLoad() {
         // 显示翻译结果div元素
         function showTranslationResult() {
             translationResult.style.display = 'block';
+            // 渐入动画、向上平移动画
+            translationResult.animate([
+                { opacity: 0, transform: 'translateY(20px)' },
+                { opacity: 1, transform: 'translateY(0px)' }
+            ], {
+                duration: 128,
+                easing: 'ease-out'
+            });
         }
 
         // 隐藏翻译结果div元素
         function hideTranslationResult() {
-            translationResult.style.display = 'none';
             chatTranslating = false;
+            // 渐出动画、向下平移动画，监听动画结束事件
+            translationResult.animate([
+                { opacity: 1, transform: 'translateY(0px)' },
+                { opacity: 0, transform: 'translateY(20px)' }
+            ], {
+                duration: 128,
+                easing: 'ease-in'
+            }).onfinish = function () {
+                translationResult.style.display = 'none';
+            };
         }
 
         // 将翻译结果div元素添加到聊天框上方
