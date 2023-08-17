@@ -1,0 +1,16 @@
+.deepl_plugin a {
+    color: var(--text-link);
+}
+
+.deepl_plugin input {
+    align-self: normal;
+    flex: 1;
+    border-radius: 4px;
+    margin-right: 16px;
+    transition: all 100ms ease-out;
+}
+
+.deepl_plugin input:focus {
+    padding-left: 5px;
+    background-color: var(--overlay_active);
+}

@@ -5,7 +5,7 @@
     "slug": "deepl_plugin",
     "description": "将 DeepL 翻译接入你的 QQNT",
     "version": "1.0.0",
-    "thumbnail": "./res/icon.png",
+    "thumbnail": "./res/icon.webp",
     "author": {
         "name": "MUKAPP",
         "link": "https://github.com/MUKAPP"
