@@ -59,7 +59,7 @@ async function translate(text, target, callback) {
 
 // 页面加载完成时触发
 async function onLoad() {
-    observeElement('#ml-root .ml-list', function () {
+    observeElement2('#ml-root .ml-list', function () {
         let msgElement = null;
         let rightTranslating = false;
         let chatTranslating = false;
@@ -132,7 +132,7 @@ async function onLoad() {
                                 // 获取msgElement的子元素（message-content）
                                 const messageContent = msgElement.querySelector(".message-content");
                                 // 在messageContent的最后插入一条分割线
-                                messageContent.insertAdjacentHTML("beforeend", `<div id="deepl-divider" style="height: 4px;width: auto;background: #00000021;margin-top: 8px;margin-bottom: 8px;border-radius: 2px;margin-left: 30%;margin-right: 30%;"></div>`);
+                                messageContent.insertAdjacentHTML("beforeend", `<div id="deepl-divider" style="height: 4px;width: auto;margin-top: 8px;margin-bottom: 8px;border-radius: 2px;margin-left: 30%;margin-right: 30%;"></div>`);
                                 // 然后插入span class="text-element"，在这个span中插入正在翻译...
                                 messageContent.insertAdjacentHTML("beforeend", `<span id="deepl-result" class='text-element'>正在翻译...</span>`);
 
@@ -186,6 +186,10 @@ async function onLoad() {
 
         const style = document.createElement("style");
         style.innerHTML = `
+        #deepl-divider {
+            background: #00000021;
+        }
+        
         .translation-title {
             font-size: 16px;
         }
