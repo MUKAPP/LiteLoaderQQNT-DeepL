@@ -1,10 +1,12 @@
 # LiteLoaderQQNT-DeepL
 
-将 DeepL 翻译接入你的 QQNT
+[LiteLoaderQQNT](https://github.com/mo-jinran/LiteLoaderQQNT) 插件，将 DeepL 翻译接入你的 QQNT
 
-目前有**右键翻译**和**消息框翻译**（无法替换消息框内容，所以现在是复制）
+目前有 **右键翻译** 和 **消息框内文本翻译**
 
-目标语言代号（摘自 DeepL 官网文档）：
+~~之前很少接触网页开发，代码很拉，由我和 Copilot 完成，注释写那么详细是为了让 Copilot 看懂~~
+
+## 目标语言代号（摘自 DeepL 官网文档）：
 ``` text
 BG - 保加利亚语
 CS - 捷克语
@@ -36,3 +38,6 @@ TR - 土耳其语
 UK - 乌克兰语
 ZH - 中文
 ```
+
+## 截图
+![截图](./res/screenshots/1.png)

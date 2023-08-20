@@ -39,6 +39,7 @@ function observeElement2(selector, callback, callbackEnable = true, interval = 1
 }
 
 async function translate(text, target, callback) {
+    log("翻译", text, "为", target);
     const settings = await deepl_plugin.getSettings();
     const host = settings.host;
     const res = await fetch(`${host}/translate`, {
@@ -150,12 +151,14 @@ async function onLoad() {
                                         // 如果翻译结果不为空
                                         if (result) {
                                             // 获取messageContent里的deepl-result，把里面的内容替换为span class="text-normal"，显示翻译结果
-                                            messageContent.querySelector("#deepl-result").innerHTML = `<span class="text-normal">${result}</span>`;
+                                            messageContent.querySelector("#deepl-result").innerHTML = `<span class="text-normal"></span>`;
+                                            // 获取messageContent里的deepl-result的text-normal，把里面的内容替换为翻译结果
+                                            messageContent.querySelector("#deepl-result .text-normal").innerText = result;  
                                             return;
                                         }
                                     }
                                     // 如果翻译失败，获取messageContent里的deepl-result，把里面的内容替换为翻译失败
-                                    messageContent.querySelector("#deepl-result").innerHTML = `翻译失败` + data;
+                                    messageContent.querySelector("#deepl-result").innerText = `翻译失败` + data;
                                 });
                             });
                         }
@@ -176,8 +179,8 @@ async function onLoad() {
         <div class="translate-bar">
             <div class="translation-title">翻译结果</div>
             <div class="translate-buttons">
-                <button id="copy-button">复制</button>
-                <button id="cancel-button">取消</button>
+                <button id="copy-button" class="q-button q-button--small q-button--primary">复制</button>
+                <button id="cancel-button" class="q-button q-button--small q-button--secondary">取消</button>
             </div>
         </div>
         <div id="translation-text"></div>
@@ -220,23 +223,6 @@ async function onLoad() {
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
-        }
-        
-        #copy-button {
-            background: var(--brand_standard);
-            padding: 4px 12px;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            margin-right: 4px;
-        }
-
-        #cancel-button {
-            background-color: transparent;
-            color: var(--text_primary);
-            border: 1px solid var(--fill_standard_primary);
-            padding: 4px 12px;
-            border-radius: 8px;
         }`;
         document.head.appendChild(style);
 
@@ -247,6 +233,7 @@ async function onLoad() {
 
         // 显示翻译结果div元素
         function showTranslationResult() {
+            chatTranslating = true;
             translationResult.style.display = 'block';
             // 渐入动画、向上平移动画
             translationResult.animate([
@@ -260,7 +247,6 @@ async function onLoad() {
 
         // 隐藏翻译结果div元素
         function hideTranslationResult() {
-            chatTranslating = false;
             // 渐出动画、向下平移动画，监听动画结束事件
             translationResult.animate([
                 { opacity: 1, transform: 'translateY(0px)' },
@@ -270,6 +256,7 @@ async function onLoad() {
                 easing: 'ease-in'
             }).onfinish = function () {
                 translationResult.style.display = 'none';
+                chatTranslating = false;
             };
         }
 
@@ -334,27 +321,27 @@ async function onLoad() {
                 if (chatTranslating) {
                     return;
                 }
+                // 显示翻译结果div元素
+                showTranslationResult();
+                translationText.innerText = "翻译中...";
+
                 const content = document.querySelector('.ck-editor__editable');
 
-                const text = content.textContent;
-                // 调用translate函数，传入需要翻译的文本、目标语言，然后获取翻译结果
-                chatTranslating = true;
+                const text = content.innerText;
                 // 读取聊天框翻译的目标语言
                 const settings = await deepl_plugin.getSettings();
                 const targetLanguage = settings.chatTargetLang;
+                // 调用translate函数，传入需要翻译的文本、目标语言，然后获取翻译结果
                 translate(text, targetLanguage, function (json) {
                     if (json.code === 200) {
                         const result = json.data;
                         if (result) {
-                            // 显示翻译结果div元素
-                            showTranslationResult();
                             // 设置翻译文本
-                            translationText.innerHTML = result;
+                            translationText.innerText = result;
                             return;
                         }
                     }
-                    showTranslationResult();
-                    translationText.innerHTML = "翻译失败";
+                    translationText.innerText = "翻译失败";
                 });
 
             });
