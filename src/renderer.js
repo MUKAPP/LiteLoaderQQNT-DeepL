@@ -209,6 +209,7 @@ async function onLoad() {
             border-radius: 8px;
             margin: 8px 16px;
             box-shadow: 0 4px 12px 0px #00000021;
+            z-index: 9999;
         }
         
         #translation-text {
