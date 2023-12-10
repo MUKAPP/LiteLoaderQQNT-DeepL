@@ -61,114 +61,108 @@ async function translate(text, target, callback) {
 // 页面加载完成时触发
 async function onLoad() {
     observeElement2('#ml-root .ml-list', function () {
-        let msgElement = null;
         let rightTranslating = false;
         let chatTranslating = false;
+        let messageEl;
 
         // -- 右键翻译 -- //
-        // 监听class为msg-content-container的div或者外部含有msg-content-container的元素被右键点击
-        document.querySelector('#ml-root .ml-list').addEventListener('contextmenu', function (e) {
-            if (rightTranslating) {
-                return;
+        function getMessageElement(target) {
+            if (target.matches('.msg-content-container')) {
+                return target;
             }
-            // 获取被右键点击的元素
-            const target = e.target;
-            // log("被右键点击的元素", target);
-            // 如果被右键点击的元素是class为msg-content-container的div或者外部含有msg-content-container的元素
-            if (target.classList.contains('msg-content-container') || target.closest('.msg-content-container')) {
-                // 获取被右键点击的元素的文本内容
-                const text = target.innerText;
-                // 如果文本内容不为空
-                if (text) {
-                    // 如果当前元素是msg-content-container则设置msgElement为当前元素
-                    if (target.classList.contains('msg-content-container')) {
-                        msgElement = target;
-                    } else {
-                        // 否则设置msgElement为当前元素外部含有msg-content-container的元素
-                        msgElement = target.closest('.msg-content-container');
-                    }
-                    // 监听菜单出现(class为q-context-menu__mixed-type)
-                    observeElement(".q-context-menu__mixed-type", function () {
-                        const qContextMenu = document.querySelector("#qContextMenu");
-                        const tempEl = document.createElement("div");
-                        tempEl.innerHTML = document
-                            .querySelector("#qContextMenu [aria-disabled='false']")
-                            .outerHTML.replace(/<!---->/g, "");
-                        const item = tempEl.firstChild;
-                        item.id = "deepl-translate";
-                        if (item.querySelector(".q-icon")) {
-                            item.querySelector(".q-icon")
-                                .innerHTML = `
+            return target.closest('.msg-content-container');
+        }
+
+        // 监听右键点击 
+        document.querySelector('#ml-root .ml-list').addEventListener('mouseup', e => {
+            // 获取被点击的消息元素
+            messageEl = getMessageElement(e.target);
+            console.log('右键点击消息', messageEl);
+        });
+
+        new MutationObserver(() => {
+            const qContextMenu = document.querySelector("#qContextMenu");
+            console.log('右键菜单弹出', messageEl);
+            if (qContextMenu && messageEl) {
+                // 获取messageEl的子元素message-content的文本
+                console.log(messageEl.querySelector(".message-content").innerText);
+                if (!messageEl.querySelector(".message-content").innerText) {
+                    return;
+                }
+                const tempEl = document.createElement("div");
+                tempEl.innerHTML = document.querySelector("#qContextMenu [aria-disabled='false']").outerHTML.replace(/<!---->/g, "");
+                const item = tempEl.firstChild;
+                item.id = "deepl-translate";
+                if (item.querySelector(".q-icon")) {
+                    item.querySelector(".q-icon").innerHTML = `
                                     <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802"></path>
                                     </svg>`;
-                        }
-                        // 判断是否已经翻译过(msgElement的子元素是否有deepl-divider)
-                        if (msgElement.querySelector("#deepl-divider")) {
-                            // 如果已经翻译过则设置菜单项为“撤销翻译”
-                            if (item.className.includes("q-context-menu-item__text")) {
-                                item.innerText = "撤销翻译";
-                            } else {
-                                item.querySelector(".q-context-menu-item__text").innerText = "撤销翻译";
-                            }
-                            item.addEventListener("click", async () => {
-                                qContextMenu.remove();
-                                // 获取msgElement的子元素（message-content）
-                                const messageContent = msgElement.querySelector(".message-content");
-                                // 删除deepl-divider
-                                messageContent.removeChild(msgElement.querySelector("#deepl-divider"));
-                                // 删除deepl-result
-                                messageContent.removeChild(msgElement.querySelector("#deepl-result"));
-                            });
-                        } else {
-                            if (item.className.includes("q-context-menu-item__text")) {
-                                item.innerText = "翻译";
-                            } else {
-                                item.querySelector(".q-context-menu-item__text").innerText = "翻译";
-                            }
-                            item.addEventListener("click", async () => {
-                                qContextMenu.remove();
-                                // 获取设置中的host
-                                const needTransText = msgElement.innerText;
-                                // 获取msgElement的子元素（message-content）
-                                const messageContent = msgElement.querySelector(".message-content");
-                                // 在messageContent的最后插入一条分割线
-                                messageContent.insertAdjacentHTML("beforeend", `<div id="deepl-divider" style="height: 4px;width: auto;margin-top: 8px;margin-bottom: 8px;border-radius: 2px;margin-left: 30%;margin-right: 30%;"></div>`);
-                                // 然后插入span class="text-element"，在这个span中插入正在翻译...
-                                messageContent.insertAdjacentHTML("beforeend", `<span id="deepl-result" class='text-element'>正在翻译...</span>`);
-
-                                rightTranslating = true;
-                                // 调用translate函数，传入需要翻译的文本、目标语言，然后获取翻译结果
-                                // 读取右键翻译的目标语言
-                                const settings = await deepl_plugin.getSettings();
-                                const targetLang = settings.rightTargetLang;
-                                translate(needTransText, targetLang, function (data) {
-                                    rightTranslating = false;
-                                    // 如果code为200
-                                    if (data.code === 200) {
-                                        // 获取翻译结果
-                                        const result = data.data;
-                                        // 如果翻译结果不为空
-                                        if (result) {
-                                            // 获取messageContent里的deepl-result，把里面的内容替换为span class="text-normal"，显示翻译结果
-                                            messageContent.querySelector("#deepl-result").innerHTML = `<span class="text-normal"></span>`;
-                                            // 获取messageContent里的deepl-result的text-normal，把里面的内容替换为翻译结果
-                                            messageContent.querySelector("#deepl-result .text-normal").innerText = result;  
-                                            return;
-                                        }
-                                    }
-                                    // 如果翻译失败，获取messageContent里的deepl-result，把里面的内容替换为翻译失败
-                                    messageContent.querySelector("#deepl-result").innerText = `翻译失败` + data;
-                                });
-                            });
-                        }
-                        qContextMenu.appendChild(item);
-                    });
-                    return;
                 }
-                msgElement = null;
+                if (messageEl.querySelector("#deepl-divider")) {
+                    // 如果已经翻译过则设置菜单项为“撤销翻译”
+                    if (item.className.includes("q-context-menu-item__text")) {
+                        item.innerText = "撤销翻译";
+                    } else {
+                        item.querySelector(".q-context-menu-item__text").innerText = "撤销翻译";
+                    }
+                    item.addEventListener("click", async () => {
+                        qContextMenu.remove();
+                        // 获取messageEl的子元素（message-content）
+                        const messageContent = messageEl.querySelector(".message-content");
+                        // 删除deepl-divider
+                        messageContent.removeChild(messageEl.querySelector("#deepl-divider"));
+                        // 删除deepl-result
+                        messageContent.removeChild(messageEl.querySelector("#deepl-result"));
+                    });
+                } else {
+                    if (item.className.includes("q-context-menu-item__text")) {
+                        item.innerText = "翻译";
+                    } else {
+                        item.querySelector(".q-context-menu-item__text").innerText = "翻译";
+                    }
+                    item.addEventListener("click", async () => {
+                        qContextMenu.remove();
+                        // 获取设置中的host
+                        const needTransText = messageEl.innerText;
+                        // 获取messageEl的子元素（message-content）
+                        const messageContent = messageEl.querySelector(".message-content");
+                        // 在messageContent的最后插入一条分割线
+                        messageContent.insertAdjacentHTML("beforeend", `<div id="deepl-divider" style="height: 4px;width: auto;margin-top: 8px;margin-bottom: 8px;border-radius: 2px;margin-left: 30%;margin-right: 30%;"></div>`);
+                        // 然后插入span class="text-element"，在这个span中插入正在翻译...
+                        messageContent.insertAdjacentHTML("beforeend", `<span id="deepl-result" class='text-element'>正在翻译...</span>`);
+
+                        rightTranslating = true;
+                        // 调用translate函数，传入需要翻译的文本、目标语言，然后获取翻译结果
+                        // 读取右键翻译的目标语言
+                        const settings = await deepl_plugin.getSettings();
+                        const targetLang = settings.rightTargetLang;
+                        translate(needTransText, targetLang, function (data) {
+                            rightTranslating = false;
+                            // 如果code为200
+                            if (data.code === 200) {
+                                // 获取翻译结果
+                                const result = data.data;
+                                // 如果翻译结果不为空
+                                if (result) {
+                                    // 获取messageContent里的deepl-result，把里面的内容替换为span class="text-normal"，显示翻译结果
+                                    messageContent.querySelector("#deepl-result").innerHTML = `<span class="text-normal"></span>`;
+                                    // 获取messageContent里的deepl-result的text-normal，把里面的内容替换为翻译结果
+                                    messageContent.querySelector("#deepl-result .text-normal").innerText = result;
+                                    return;
+                                }
+                            }
+                            // 如果翻译失败，获取messageContent里的deepl-result，把里面的内容替换为翻译失败
+                            messageContent.querySelector("#deepl-result").innerText = `翻译失败` + data;
+                        });
+                    });
+                }
+                qContextMenu.appendChild(item);
             }
-        });
+
+        }).observe(document.querySelector("body"), { childList: true });
+
+
 
 
         // -- 消息栏翻译 -- //

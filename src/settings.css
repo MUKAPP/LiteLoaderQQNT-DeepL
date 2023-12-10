@@ -14,3 +14,17 @@
     padding-left: 5px;
     background-color: var(--overlay_active);
 }
+
+/* 浅色模式 */
+@media (prefers-color-scheme: light) {
+    .deepl_plugin input {
+        color: black;
+    }
+}
+
+/* 深色模式 */
+@media (prefers-color-scheme: dark) {
+    .deepl_plugin input {
+        color: white;
+    }
+}
