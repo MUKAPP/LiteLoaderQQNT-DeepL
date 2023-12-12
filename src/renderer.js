@@ -5,26 +5,6 @@ function log(...args) {
     console.log(`[DeepL]`, ...args);
 }
 
-function observeElement(selector, callback, callbackEnable = true, interval = 100, timeout = 5000) {
-    let elapsedTime = 0;
-    const timer = setInterval(function () {
-        const element = document.querySelector(selector);
-        if (element) {
-            if (callbackEnable) {
-                callback();
-                log("已检测到", selector);
-            }
-            clearInterval(timer);
-        }
-
-        elapsedTime += interval;
-        if (elapsedTime >= timeout) {
-            clearInterval(timer);
-            log('超时', selector, "未出现");
-        }
-    }, interval);
-}
-
 function observeElement2(selector, callback, callbackEnable = true, interval = 100) {
     const timer = setInterval(function () {
         const element = document.querySelector(selector);
@@ -64,6 +44,7 @@ async function onLoad() {
         let rightTranslating = false;
         let chatTranslating = false;
         let messageEl;
+        let appended = true;
 
         // -- 右键翻译 -- //
         function getMessageElement(target) {
@@ -77,15 +58,19 @@ async function onLoad() {
         document.querySelector('#ml-root .ml-list').addEventListener('mouseup', e => {
             // 获取被点击的消息元素
             messageEl = getMessageElement(e.target);
-            console.log('右键点击消息', messageEl);
+            log('右键点击消息', messageEl);
+            appended = false;
         });
 
         new MutationObserver(() => {
             const qContextMenu = document.querySelector("#qContextMenu");
-            console.log('右键菜单弹出', messageEl);
+            log('右键菜单弹出', messageEl);
+            if (appended) {
+                return;
+            }
             if (qContextMenu && messageEl) {
                 // 获取messageEl的子元素message-content的文本
-                console.log(messageEl.querySelector(".message-content").innerText);
+                log(messageEl.querySelector(".message-content").innerText);
                 if (!messageEl.querySelector(".message-content").innerText) {
                     return;
                 }
@@ -158,6 +143,7 @@ async function onLoad() {
                     });
                 }
                 qContextMenu.appendChild(item);
+                appended = true;
             }
 
         }).observe(document.querySelector("body"), { childList: true });
