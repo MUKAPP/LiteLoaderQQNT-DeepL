@@ -4,7 +4,7 @@
     "name": "DeepL",
     "slug": "deepl_plugin",
     "description": "将 DeepL 翻译接入你的 QQNT",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "thumbnail": "./res/icon.webp",
     "author": {
         "name": "MUKAPP",
