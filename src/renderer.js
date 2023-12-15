@@ -56,6 +56,11 @@ async function onLoad() {
 
         // 监听右键点击 
         document.querySelector('#ml-root .ml-list').addEventListener('mouseup', e => {
+            // 判断是否右键点击
+            if (e.button !== 2) {
+                appended = true;
+                return;
+            }
             // 获取被点击的消息元素
             messageEl = getMessageElement(e.target);
             log('右键点击消息', messageEl);
