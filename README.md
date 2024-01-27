@@ -4,7 +4,8 @@
 
 目前有 **右键翻译** 和 **消息框内文本翻译**
 
-~~之前很少接触网页开发，代码很拉，由我和 Copilot 完成，注释写那么详细是为了让 Copilot 看懂~~
+> [!NOTE]  
+> 1.0.8 版本开始最低支持 LiteLoaderQQNT 1.0.0（测试版），1.0.7 及以下支持 1.0.0 以下版本
 
 ## 目标语言代号（摘自 DeepL 官网文档）：
 ``` text
@@ -41,3 +42,23 @@ ZH - 中文
 
 ## 截图
 ![截图](./res/screenshots/1.png)
+
+## Star History
+<picture>
+  <source
+    media="(prefers-color-scheme: dark)"
+    srcset="
+      https://api.star-history.com/svg?repos=MUKAPP/LiteLoaderQQNT-DeepL&type=Date&theme=dark
+    "
+  />
+  <source
+    media="(prefers-color-scheme: light)"
+    srcset="
+      https://api.star-history.com/svg?repos=MUKAPP/LiteLoaderQQNT-DeepL&type=Date
+    "
+  />
+  <img
+    alt="Star History Chart"
+    src="https://api.star-history.com/svg?repos=MUKAPP/LiteLoaderQQNT-DeepL&type=Date"
+  />
+</picture>
