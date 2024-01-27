@@ -1,54 +1,104 @@
-<body>
-    <section class="enhancement">
-        <h1>常规</h1>
-        <div class="wrap">
-            <div class="vertical-list-item">
+<style>
+    .deepl_plugin a {
+        color: var(--text-link);
+    }
+
+    .deepl_plugin input {
+        align-self: normal;
+        flex: 1;
+        border-radius: 4px;
+        margin-right: 12px;
+        padding: 2px 4px;
+        transition: all 100ms ease-out;
+    }
+
+    .deepl_plugin input:focus {
+        padding-left: 4px;
+        background-color: var(--overlay_active);
+    }
+
+    .deepl_plugin .input-group {
+        display: flex;
+        flex-direction: row;
+        margin-top: 8px;
+    }
+
+    .deepl_plugin .ops-btns>*:not(:last-child) {
+        margin-right: 4px;
+    }
+
+    /* 设置列表项宽度最大，而不是靠文本撑 */
+    .deepl_plugin setting-item>div {
+        width: 100%;
+    }
+
+    /* 浅色模式 */
+    @media (prefers-color-scheme: light) {
+        .deepl_plugin input {
+            color: black;
+        }
+    }
+
+    /* 深色模式 */
+    @media (prefers-color-scheme: dark) {
+        .deepl_plugin input {
+            color: white;
+        }
+    }
+</style>
+
+<setting-section data-title="常规" class="enhancement">
+    <setting-panel>
+        <setting-list data-direction="column">
+            <setting-item data-direction="column">
                 <div>
-                    <h2>设置 API 地址</h2>
-                    <span class="secondary-text">默认使用的是由插件作者自己的服务器搭建的 <a href="javascript:void(0);"
-                            onclick="plugins_marketplace.openWeb('https://github.com/OwO-Network/DeepLX')">DeepLX</a>，如果使用的人太多可能会被
-                        DeepL 封禁 IP，所以你也可以自行搭建一个 API 服务填入下方</span>
+                    <setting-text>设置 API 地址</setting-text>
+                    <setting-text data-type="secondary">默认使用的是由插件作者自己的服务器搭建的 <a href="javascript:void(0);"
+                            onclick="deepl_plugin.openWeb('https://github.com/OwO-Network/DeepLX')">DeepLX</a>，如果使用的人太多可能会被
+                        DeepL 封禁 IP，所以你也可以自行搭建一个 API 服务填入下方</setting-text>
+                    <div class="input-group">
+                        <input class="api-input" type="text" spellcheck="false">
+                        <div class="ops-btns">
+                            <setting-button data-type="secondary" class="reset">恢复默认</setting-button>
+                            <setting-button data-type="secondary" class="apply">立即应用</setting-button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="vertical-list-item">
-                <input class="api-input" type="text" spellcheck="false">
-                <div class="ops-btns">
-                    <button class="q-button q-button--small q-button--secondary reset">恢复默认</button>
-                    <button class="q-button q-button--small q-button--secondary apply">立即应用</button>
-                </div>
-            </div>
-            <hr class="horizontal-dividing-line">
-            <div class="vertical-list-item">
+            </setting-item>
+
+            <setting-item data-direction="column">
                 <div>
-                    <h2>设置消息右键翻译目标语言</h2>
-                    <span class="secondary-text">填入语言代号，默认值：ZH (中文)，语言代号可以在 <a href="javascript:void(0);"
-                            onclick="plugins_marketplace.openWeb('https://github.com/MUKAPP/LiteLoaderQQNT-DeepL#readme')">这里</a>
-                        查看</span>
+                    <setting-text>设置消息右键翻译目标语言</setting-text>
+                    <setting-text data-type="secondary">填入语言代号，默认值：ZH (中文)，语言代号可以在 <a href="javascript:void(0);"
+                            onclick="deepl_plugin.openWeb('https://github.com/MUKAPP/LiteLoaderQQNT-DeepL#readme')">这里</a>
+                        查看</setting-text>
+
+                    <div class="input-group">
+                        <input class="right-target-lang" type="text" spellcheck="false">
+                        <div class="ops-btns">
+                            <setting-button data-type="secondary" class="right-target-lang-reset">恢复默认</setting-button>
+                            <setting-button data-type="secondary" class="right-target-lang-apply">立即应用</setting-button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="vertical-list-item">
-                <input class="right-target-lang" type="text" spellcheck="false">
-                <div class="ops-btns">
-                    <button class="q-button q-button--small q-button--secondary right-target-lang-reset">恢复默认</button>
-                    <button class="q-button q-button--small q-button--secondary right-target-lang-apply">立即应用</button>
-                </div>
-            </div>
-            <hr class="horizontal-dividing-line">
-            <div class="vertical-list-item">
+            </setting-item>
+
+            <setting-item data-direction="column">
                 <div>
-                    <h2>设置消息框翻译目标语言</h2>
-                    <span class="secondary-text">填入语言代号，默认值：EN (英文)，语言代号可以在 <a href="javascript:void(0);"
-                        onclick="plugins_marketplace.openWeb('https://github.com/MUKAPP/LiteLoaderQQNT-DeepL#readme')">这里</a>
-                    查看</span>
-                </div>
-            </div>
-            <div class="vertical-list-item">
-                <input class="chat-target-lang" type="text" spellcheck="false">
-                <div class="ops-btns">
-                    <button class="q-button q-button--small q-button--secondary chat-target-lang-reset">恢复默认</button>
-                    <button class="q-button q-button--small q-button--secondary chat-target-lang-apply">立即应用</button>
-                </div>
-            </div>
-        </div>
-    </section>
-</body>
+                    <setting-text>设置消息框翻译目标语言</setting-text>
+                    <setting-text data-type="secondary">填入语言代号，默认值：EN (英文)，语言代号可以在 <a href="javascript:void(0);"
+                            onclick="deepl_plugin.openWeb('https://github.com/MUKAPP/LiteLoaderQQNT-DeepL#readme')">这里</a>
+                        查看</setting-text>
+
+                    <div class="input-group">
+                        <input class="chat-target-lang" type="text" spellcheck="false">
+                        <div class="ops-btns">
+                            <setting-button data-type="secondary" class="chat-target-lang-reset">恢复默认</setting-button>
+                            <setting-button data-type="secondary" class="chat-target-lang-apply">立即应用</setting-button>
+                        </div>
+                    </div>
+            </setting-item>
+
+        </setting-list>
+    </setting-panel>
+</setting-section>

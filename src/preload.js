@@ -11,4 +11,10 @@ contextBridge.exposeInMainWorld("deepl_plugin", {
         "LiteLoader.deepl_plugin.setSettings",
         content
     ),
+    logToMain: (...args) => ipcRenderer.invoke(
+        "LiteLoader.deepl_plugin.logToMain",
+        ...args
+    ),
+    openWeb: (url) =>
+        ipcRenderer.send("LiteLoader.deepl_plugin.openWeb", url)
 });
