@@ -150,7 +150,7 @@ observeElement('#ml-root .ml-list', function () {
                             }
                         }
                         // 如果翻译失败，获取messageContent里的deepl-result，把里面的内容替换为翻译失败
-                        messageContent.querySelector("#deepl-result").innerText = `翻译失败` + data;
+                        messageContent.querySelector("#deepl-result").innerText = `翻译失败：` + data.message;
                     });
                 });
             }
