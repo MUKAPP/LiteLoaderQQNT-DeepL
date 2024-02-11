@@ -23,6 +23,28 @@ function observeElement(selector, callback, callbackEnable = true, interval = 10
     }
 }
 
+// 点击群助手后chat-func-bar会消失，再点群聊才会出现，所以需要再写一个监听
+function observeElement2(selector, callback, callbackEnable = true, interval = 100) {
+    var appeared = false;
+    try {
+        const timer = setInterval(function () {
+            const element = document.querySelector(selector);
+            if (element) {
+                if (callbackEnable && !appeared) {
+                    callback();
+                    log("已检测到", selector);
+                    appeared = true;
+                }
+            } else {
+                appeared = false;
+            }
+        }, interval);
+    } catch (error) {
+        log("[检测元素错误]", error);
+    }
+}
+
+
 async function translate(text, target, callback) {
     try {
         log("翻译", text, "为", target);
@@ -287,7 +309,7 @@ observeElement('#ml-root .ml-list', function () {
     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802"></path>
 </svg>`
 
-    observeElement(".chat-func-bar", function () {
+    observeElement2(".chat-func-bar", function () {
         // 获取消息栏的左侧图标区域（就是chat-func-bar的第一个子元素）
         const iconBarLeft = document.querySelector(".chat-func-bar").firstElementChild;
 
