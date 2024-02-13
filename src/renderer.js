@@ -25,18 +25,14 @@ function observeElement(selector, callback, callbackEnable = true, interval = 10
 
 // 点击群助手后chat-func-bar会消失，再点群聊才会出现，所以需要再写一个监听
 function observeElement2(selector, callback, callbackEnable = true, interval = 100) {
-    var appeared = false;
     try {
         const timer = setInterval(function () {
             const element = document.querySelector(selector);
             if (element) {
-                if (callbackEnable && !appeared) {
+                if (callbackEnable) {
                     callback();
                     log("已检测到", selector);
-                    appeared = true;
                 }
-            } else {
-                appeared = false;
             }
         }, interval);
     } catch (error) {
@@ -312,6 +308,11 @@ observeElement('#ml-root .ml-list', function () {
     observeElement2(".chat-func-bar", function () {
         // 获取消息栏的左侧图标区域（就是chat-func-bar的第一个子元素）
         const iconBarLeft = document.querySelector(".chat-func-bar").firstElementChild;
+
+        // 判断是否已经添加过deepl-bar-icon
+        if (iconBarLeft.querySelector("#deepl-bar-icon")) {
+            return;
+        }
 
         // 复制iconBarLeft的第一个子元素
         const barIcon = iconBarLeft.firstElementChild.cloneNode(true);
