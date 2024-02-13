@@ -65,7 +65,7 @@ async function translate(text, target, callback) {
 }
 
 // 页面加载完成时触发
-let rightTranslating = false;
+let rightTranslating
 let chatTranslating = false;
 let messageEl;
 let appended = true;
