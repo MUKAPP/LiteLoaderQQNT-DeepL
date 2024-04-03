@@ -217,7 +217,7 @@ observeElement('.chat-input-area .ck-editor', function () {
             top: 0;
             left: 0;
             width: auto;
-            background-color: var(--bg_bottom_standard);
+            background-color: var(--bg_bottom_light);
             padding: 16px;
             display: none;
             border-radius: 8px;
