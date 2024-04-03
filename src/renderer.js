@@ -25,14 +25,18 @@ function observeElement(selector, callback, callbackEnable = true, interval = 10
 
 // 点击群助手后chat-func-bar会消失，再点群聊才会出现，所以需要再写一个监听
 function observeElement2(selector, callback, callbackEnable = true, interval = 100) {
+    let elementExists = false;
     try {
         const timer = setInterval(function () {
             const element = document.querySelector(selector);
-            if (element) {
+            if (element && !elementExists) {
+                elementExists = true;
                 if (callbackEnable) {
                     callback();
                     log("已检测到", selector);
                 }
+            } else if (!element) {
+                elementExists = false;
             }
         }, interval);
     } catch (error) {
@@ -70,7 +74,7 @@ let chatTranslating = false;
 let messageEl;
 let appended = true;
 
-observeElement('#ml-root .ml-list', function () {
+observeElement('.chat-input-area .ck-editor', function () {
     // -- 右键翻译 -- //
     function getMessageElement(target) {
         if (target.matches('.msg-content-container')) {
