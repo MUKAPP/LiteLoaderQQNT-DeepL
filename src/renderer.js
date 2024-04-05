@@ -94,13 +94,8 @@ observeElement('.chat-input-area .ck-editor', function () {
         messageEl = getMessageElement(e.target);
         log('右键点击消息', messageEl);
         appended = false;
-    });
 
-    new MutationObserver(() => {
-        const qContextMenu = document.querySelector(".q-context-menu");
-        if (appended) {
-            return;
-        }
+        const qContextMenu = document.querySelector("div.q-context-menu:not(.more-menu)");
         if (qContextMenu && messageEl) {
             log('右键菜单弹出', messageEl);
             // 获取messageEl的子元素message-content的文本
@@ -180,7 +175,7 @@ observeElement('.chat-input-area .ck-editor', function () {
             appended = true;
         }
 
-    }).observe(document.querySelector("body"), { childList: true });
+    });
 
 
 
