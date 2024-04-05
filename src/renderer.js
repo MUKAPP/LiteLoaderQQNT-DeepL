@@ -6,44 +6,26 @@ function log(...args) {
     // deepl_plugin.logToMain(...args);
 }
 
-function observeElement(selector, callback, callbackEnable = true, interval = 100) {
-    try {
-        const timer = setInterval(function () {
-            const element = document.querySelector(selector);
-            if (element) {
-                if (callbackEnable) {
-                    callback();
-                    log("已检测到", selector);
-                }
-                clearInterval(timer);
-            }
-        }, interval);
-    } catch (error) {
-        log("[检测元素错误]", error);
-    }
-}
-
-// 点击群助手后chat-func-bar会消失，再点群聊才会出现，所以需要再写一个监听
-function observeElement2(selector, callback, callbackEnable = true, interval = 100) {
+function observeElement(selector, callback, continuous = false) {
     let elementExists = false;
     try {
         const timer = setInterval(function () {
             const element = document.querySelector(selector);
             if (element && !elementExists) {
                 elementExists = true;
-                if (callbackEnable) {
-                    callback();
-                    log("已检测到", selector);
-                }
+                callback();
+                log("已检测到", selector);
             } else if (!element) {
                 elementExists = false;
             }
-        }, interval);
+            if (element && !continuous) {
+                clearInterval(timer);
+            }
+        }, 100);
     } catch (error) {
         log("[检测元素错误]", error);
     }
 }
-
 
 async function translate(text, target, callback) {
     try {
@@ -65,27 +47,31 @@ async function translate(text, target, callback) {
         callback(data);
     } catch (error) {
         log("[翻译错误]", error);
+        callback({
+            code: -1,
+            message: error.message
+        });
     }
 }
 
+
 // 页面加载完成时触发
-let rightTranslating
 let chatTranslating = false;
 let messageEl;
-let appended = true;
+let appended = true; // 阻止重复添加菜单项
 
-observeElement('.chat-input-area .ck-editor', function () {
-    // -- 右键翻译 -- //
-    function getMessageElement(target) {
-        if (target.matches('.msg-content-container')) {
-            return target;
-        }
-        return target.closest('.msg-content-container');
+function getMessageElement(target) {
+    if (target.matches('.msg-content-container')) {
+        return target;
     }
+    return target.closest('.msg-content-container');
+}
 
+// -- 右键翻译 -- //
+observeElement('#ml-root .ml-list', function () {
     // 监听右键点击
-    document.querySelector('#ml-root .ml-list').addEventListener('mouseup', e => {
-        // 判断是否右键点击
+    document.querySelector('#ml-root .ml-list').addEventListener('mousedown', e => {
+        // 判断是否为右键
         if (e.button !== 2) {
             appended = true;
             return;
@@ -97,13 +83,13 @@ observeElement('.chat-input-area .ck-editor', function () {
     });
 
     new MutationObserver(() => {
-        const qContextMenu = document.querySelector(".q-context-menu");
         if (appended) {
             return;
         }
+        const qContextMenu = document.querySelector(".q-context-menu");
         if (qContextMenu && messageEl) {
-            log('右键菜单弹出', messageEl);
-            // 获取messageEl的子元素message-content的文本
+            log('右键菜单弹出', qContextMenu);
+            // 判断 message-content 是否含有文本
             log(messageEl.querySelector(".message-content").innerText);
             if (!messageEl.querySelector(".message-content").innerText) {
                 return;
@@ -119,7 +105,7 @@ observeElement('.chat-input-area .ck-editor', function () {
                                     </svg>`;
             }
             if (messageEl.querySelector("#deepl-divider")) {
-                // 如果已经翻译过则设置菜单项为“撤销翻译”
+                // 如果已经翻译过，则显示撤销翻译
                 if (item.className.includes("q-context-menu-item__text")) {
                     item.innerText = "撤销翻译";
                 } else {
@@ -127,11 +113,11 @@ observeElement('.chat-input-area .ck-editor', function () {
                 }
                 item.addEventListener("click", async () => {
                     qContextMenu.remove();
-                    // 获取messageEl的子元素（message-content）
+                    // 获取 messageEl 的子元素 message-content
                     const messageContent = messageEl.querySelector(".message-content");
-                    // 删除deepl-divider
+                    // 删除 deepl-divider
                     messageContent.removeChild(messageEl.querySelector("#deepl-divider"));
-                    // 删除deepl-result
+                    // 删除 deepl-result
                     messageContent.removeChild(messageEl.querySelector("#deepl-result"));
                 });
             } else {
@@ -142,37 +128,36 @@ observeElement('.chat-input-area .ck-editor', function () {
                 }
                 item.addEventListener("click", async () => {
                     qContextMenu.remove();
-                    // 获取设置中的host
-                    const needTransText = messageEl.innerText;
-                    // 获取messageEl的子元素（message-content）
+                    // 获取 messageEl 的子元素 message-content
                     const messageContent = messageEl.querySelector(".message-content");
-                    // 在messageContent的最后插入一条分割线
+                    // 在 messageContent 的最后插入一条分割线
                     messageContent.insertAdjacentHTML("beforeend", `<div id="deepl-divider" style="height: 4px;width: auto;margin-top: 8px;margin-bottom: 8px;border-radius: 2px;margin-left: 30%;margin-right: 30%;"></div>`);
-                    // 然后插入span class="text-element"，在这个span中插入正在翻译...
+                    // 然后插入 span class="text-element"，在这个 span 中插入正在翻译...
                     messageContent.insertAdjacentHTML("beforeend", `<span id="deepl-result" class='text-element'>正在翻译...</span>`);
 
-                    rightTranslating = true;
-                    // 调用translate函数，传入需要翻译的文本、目标语言，然后获取翻译结果
-                    // 读取右键翻译的目标语言
+                    // 翻译
                     const settings = await deepl_plugin.getSettings();
+                    // 获取 messageEl 的文本内容
+                    const needTransText = messageEl.innerText;
                     const targetLang = settings.rightTargetLang;
                     translate(needTransText, targetLang, function (data) {
-                        rightTranslating = false;
-                        // 如果code为200
                         if (data.code === 200) {
                             // 获取翻译结果
                             const result = data.data;
-                            // 如果翻译结果不为空
+                            // 判断翻译结果不为空
                             if (result) {
-                                // 获取messageContent里的deepl-result，把里面的内容替换为span class="text-normal"，显示翻译结果
+                                // 获取 messageContent 里的 deepl-result，把里面的内容替换为 span class="text-normal"，显示翻译结果
                                 messageContent.querySelector("#deepl-result").innerHTML = `<span class="text-normal"></span>`;
-                                // 获取messageContent里的deepl-result的text-normal，把里面的内容替换为翻译结果
+                                // 获取messageContent里的 deepl-result 的 text-normal，把里面的内容替换为翻译结果
                                 messageContent.querySelector("#deepl-result .text-normal").innerText = result;
-                                return;
+                            } else {
+                                // 如果翻译结果为空，则显示翻译失败
+                                messageContent.querySelector("#deepl-result").innerText = `翻译失败，翻译结果为空`;
                             }
+                        } else {
+                            // 如果翻译失败，则显示翻译失败
+                            messageContent.querySelector("#deepl-result").innerText = `翻译失败：` + data.message;
                         }
-                        // 如果翻译失败，获取messageContent里的deepl-result，把里面的内容替换为翻译失败
-                        messageContent.querySelector("#deepl-result").innerText = `翻译失败：` + data.message;
                     });
                 });
             }
@@ -182,25 +167,11 @@ observeElement('.chat-input-area .ck-editor', function () {
 
     }).observe(document.querySelector("body"), { childList: true });
 
+});
 
 
-
-    // -- 消息栏翻译 -- //
-    const translationResult = document.createElement("div");
-    translationResult.id = "translation-result";
-    translationResult.zIndex = 999;
-    translationResult.innerHTML = `
-        <div class="translate-bar">
-            <div class="translation-title">翻译结果</div>
-            <div class="translate-buttons">
-                <button id="copy-button" class="q-button q-button--small q-button--primary">复制</button>
-                <button id="cancel-button" class="q-button q-button--small q-button--secondary">取消</button>
-            </div>
-        </div>
-        <div id="translation-text"></div>
-    `;
-    document.body.appendChild(translationResult);
-
+// -- 聊天框翻译 -- //
+observeElement('.chat-input-area .ck-editor', function () {
     const style = document.createElement("style");
     style.innerHTML = `
         #deepl-divider {
@@ -241,7 +212,19 @@ observeElement('.chat-input-area .ck-editor', function () {
         }`;
     document.head.appendChild(style);
 
-    var ckEditor = document.querySelector('.ck-editor');
+    const translationResult = document.createElement("div");
+    translationResult.id = "translation-result";
+    translationResult.zIndex = 999;
+    translationResult.innerHTML = `
+        <div class="translate-bar">
+            <div class="translation-title">翻译结果</div>
+            <div class="translate-buttons">
+                <button id="copy-button" class="q-button q-button--small q-button--primary">复制</button>
+                <button id="cancel-button" class="q-button q-button--small q-button--secondary">取消</button>
+            </div>
+        </div>
+        <div id="translation-text"></div>
+    `;
 
     // 显示翻译结果div元素
     function showTranslationResult() {
@@ -272,16 +255,16 @@ observeElement('.chat-input-area .ck-editor', function () {
         };
     }
 
+    var ckEditor = document.querySelector('.ck-editor');
+
     // 将翻译结果div元素添加到聊天框上方
     ckEditor.appendChild(translationResult);
 
-    // 获取复制按钮元素
+    // 复制按钮
     var copyButton = document.querySelector('#copy-button');
-
-    // 获取取消按钮元素
+    // 取消按钮
     var cancelButton = document.querySelector('#cancel-button');
-
-    // 获取翻译文本元素
+    // 翻译结果
     var translationText = document.querySelector('#translation-text');
 
     const clipboardObj = navigator.clipboard;
@@ -309,32 +292,32 @@ observeElement('.chat-input-area .ck-editor', function () {
     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802"></path>
 </svg>`
 
-    observeElement2(".chat-func-bar", function () {
-        // 获取消息栏的左侧图标区域（就是chat-func-bar的第一个子元素）
+    observeElement(".chat-func-bar", function () {
+        // 获取消息栏的左侧的第一个图标
         const iconBarLeft = document.querySelector(".chat-func-bar").firstElementChild;
 
-        // 判断是否已经添加过deepl-bar-icon
+        // 判断是否已经添加过 deepl-bar-icon
         if (iconBarLeft.querySelector("#deepl-bar-icon")) {
             return;
         }
 
-        // 复制iconBarLeft的第一个子元素
+        // 复制 iconBarLeft 的第一个子元素
         const barIcon = iconBarLeft.firstElementChild.cloneNode(true);
-        // 将id-func-bar-expression替换为deepl-bar-icon
+        // 替换 id
         barIcon.querySelector("#id-func-bar-expression").id = "deepl-bar-icon";
-        // 将svg替换为上面的svg
+        // 替换图标
         barIcon.querySelector("svg").outerHTML = icon;
-        // 将aria-label的值替换为翻译
+        // 设置 aria-label
         barIcon.querySelector("#deepl-bar-icon").setAttribute("aria-label", "翻译");
-        // 将barIcon添加到iconBarLeft的最后
+        // 添加到 iconBarLeft
         iconBarLeft.appendChild(barIcon);
 
-        // 给barIcon添加点击事件
+        // 给 barIcon 添加点击事件
         barIcon.addEventListener("click", async () => {
             if (chatTranslating) {
                 return;
             }
-            // 显示翻译结果div元素
+            // 显示翻译对话框
             showTranslationResult();
             translationText.innerText = "翻译中...";
 
@@ -344,25 +327,25 @@ observeElement('.chat-input-area .ck-editor', function () {
             // 读取聊天框翻译的目标语言
             const settings = await deepl_plugin.getSettings();
             const targetLanguage = settings.chatTargetLang;
-            // 调用translate函数，传入需要翻译的文本、目标语言，然后获取翻译结果
+
+            // 翻译
             translate(text, targetLanguage, function (json) {
                 if (json.code === 200) {
                     const result = json.data;
                     if (result) {
-                        // 设置翻译文本
                         translationText.innerText = result;
-                        return;
+                    } else {
+                        translationText.innerText = "翻译失败，翻译结果为空";
                     }
+                } else {
+                    translationText.innerText = "翻译失败：" + json.message;
                 }
-                translationText.innerText = "翻译失败";
             });
 
         });
-    });
-
+    }, true); // 点击群助手后 chat-func-bar 会消失，再点群聊才会出现，所以需要持续监听
 
 });
-
 
 // 打开设置界面时触发
 export const onSettingWindowCreated = async view => {
@@ -393,14 +376,12 @@ export const onSettingWindowCreated = async view => {
             api_input.value = "https://deepl.mukapp.top";
             settings.host = api_input.value;
             deepl_plugin.setSettings(settings);
-            // JS弹出对话框提示已恢复默认 API
             alert("已恢复默认 API");
         });
 
         apply.addEventListener("click", () => {
             settings.host = api_input.value;
             deepl_plugin.setSettings(settings);
-            // JS弹出对话框提示已应用新 API
             alert("已应用新 API");
         });
 
