@@ -12,11 +12,12 @@ MUK 的 TG 频道：[MUKAPP](https://t.me/MUKAPP_Personal)
 > 1.0.8 版本开始最低支持 LiteLoaderQQNT 1.0.0（测试版），1.0.7 及以下支持 1.0.0 以下版本
 
 - [LiteLoaderQQNT-DeepL](#liteloaderqqnt-deepl)
-  - [目标语言代号（摘自 DeepL 官网文档）：](#目标语言代号摘自-deepl-官网文档)
+  - [目标语言代号](#目标语言代号)
   - [截图](#截图)
   - [Star History](#star-history)
 
-## 目标语言代号（摘自 DeepL 官网文档）：
+## 目标语言代号
+摘自 DeepL 官网文档：
 - AR - 阿拉伯语
 - BG - 保加利亚语
 - CS - 捷克语

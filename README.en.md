@@ -12,11 +12,12 @@ MUK's TG channel: [MUKAPP](https://t.me/MUKAPP_Personal)
 > Starting from version 1.0.8, the minimum supported version of LiteLoaderQQNT is 1.0.0 (Beta). Versions 1.0.7 and below support versions below 1.0.0.
 
 - [LiteLoaderQQNT-DeepL](#liteloaderqqnt-deepl)
-  - [Target language codes (excerpted from the official DeepL documentation):](#target-language-codes-excerpted-from-the-official-deepl-documentation)
+  - [Target language codes](#target-language-codes)
   - [Screenshots](#screenshots)
   - [Star History](#star-history)
 
-## Target language codes (excerpted from the official DeepL documentation):
+## Target language codes
+Excerpted from the official DeepL documentation:
 - AR - Arabic
 - BG - Bulgarian
 - CS - Czech
