@@ -67,8 +67,8 @@ function getMessageElement(target) {
     return target.closest('.msg-content-container');
 }
 
-// -- 右键翻译 -- //
 observeElement('#ml-root .ml-list', function () {
+    // -- 右键翻译 -- //
     // 监听右键点击
     document.querySelector('#ml-root .ml-list').addEventListener('mousedown', e => {
         // 判断是否为右键
@@ -128,17 +128,26 @@ observeElement('#ml-root .ml-list', function () {
                 }
                 item.addEventListener("click", async () => {
                     qContextMenu.remove();
+                    // 获取 messageEl 的文本内容
+                    const needTransText = messageEl.innerText;
+
                     // 获取 messageEl 的子元素 message-content
                     const messageContent = messageEl.querySelector(".message-content");
-                    // 在 messageContent 的最后插入一条分割线
-                    messageContent.insertAdjacentHTML("beforeend", `<div id="deepl-divider" style="height: 4px;width: auto;margin-top: 8px;margin-bottom: 8px;border-radius: 2px;margin-left: 30%;margin-right: 30%;"></div>`);
-                    // 然后插入 span class="text-element"，在这个 span 中插入正在翻译...
-                    messageContent.insertAdjacentHTML("beforeend", `<span id="deepl-result" class='text-element'>正在翻译...</span>`);
+                    // 判断是否含有 .lite-tools-slot.embed-slot
+                    if (messageEl.querySelector(".lite-tools-slot.embed-slot")) {
+                        // 在 .lite-tools-slot.embed-slot 的前面插入一条分割线
+                        messageContent.querySelector(".lite-tools-slot.embed-slot").insertAdjacentHTML("beforebegin", `<div id="deepl-divider" style="height: 4px;width: auto;margin-top: 8px;margin-bottom: 8px;border-radius: 2px;margin-left: 30%;margin-right: 30%;"></div>`);
+                        // 然后插入 span class="text-element"，在这个 span 中插入正在翻译...
+                        messageContent.querySelector(".lite-tools-slot.embed-slot").insertAdjacentHTML("beforebegin", `<span id="deepl-result" class='text-element'>正在翻译...</span>`);
+                    } else {
+                        // 在 messageContent 的最后插入一条分割线
+                        messageContent.insertAdjacentHTML("beforeend", `<div id="deepl-divider" style="height: 4px;width: auto;margin-top: 8px;margin-bottom: 8px;border-radius: 2px;margin-left: 30%;margin-right: 30%;"></div>`);
+                        // 然后插入 span class="text-element"，在这个 span 中插入正在翻译...
+                        messageContent.insertAdjacentHTML("beforeend", `<span id="deepl-result" class='text-element'>正在翻译...</span>`);
+                    }
 
                     // 翻译
                     const settings = await deepl_plugin.getSettings();
-                    // 获取 messageEl 的文本内容
-                    const needTransText = messageEl.innerText;
                     const targetLang = settings.rightTargetLang;
                     translate(needTransText, targetLang, function (data) {
                         if (data.code === 200) {
