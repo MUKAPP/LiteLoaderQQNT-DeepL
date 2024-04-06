@@ -1,8 +1,12 @@
 # LiteLoaderQQNT-DeepL
 
-[LiteLoaderQQNT](https://github.com/mo-jinran/LiteLoaderQQNT) 插件，将 DeepL 翻译接入你的 QQNT
+简体中文 | [English](./README.en.md)
+
+[LiteLoaderQQNT](https://github.com/LiteLoaderQQNT/LiteLoaderQQNT) 插件，将 DeepL 翻译接入你的 QQNT
 
 目前有 **右键翻译** 和 **消息框内文本翻译**
+
+MUK 的 TG 频道：[MUKAPP](https://t.me/MUKAPP_Personal)
 
 > [!NOTE]  
 > 1.0.8 版本开始最低支持 LiteLoaderQQNT 1.0.0（测试版），1.0.7 及以下支持 1.0.0 以下版本
