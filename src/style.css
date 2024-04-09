@@ -52,6 +52,7 @@
 
 .deepl-plugin-bar-icon .deepl-plugin-q-tooltips:hover .deepl-plugin-q-icon {
     fill: var(--brand_standard);
+    stroke: var(--brand_standard);
 }
 
 .deepl-plugin-bar-icon .deepl-plugin-q-tooltips:hover .deepl-plugin-q-tooltips__content {
@@ -61,6 +62,7 @@
 
 .deepl-plugin-bar-icon .deepl-plugin-q-icon {
     fill: var(--icon_primary);
+    stroke: var(--icon_primary);
     width: 20.5px;
     height: 20px;
 }

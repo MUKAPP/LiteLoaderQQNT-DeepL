@@ -319,7 +319,7 @@ observeElement('.chat-input-area .ck-editor', function () {
         }
 
         // 添加 deepl-bar-icon
-        const baricon = barIcon("res/translate_FILL0_wght300_GRAD-25_opsz24.svg", "翻译", async () => {
+        const baricon = barIcon("res/translate_FILL0_wght300_GRAD-25_opsz24_origin.svg", "翻译", async () => {
             if (chatTranslating) {
                 return;
             }
