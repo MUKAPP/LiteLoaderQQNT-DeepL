@@ -1,0 +1,89 @@
+#deepl-divider {
+    background: #00000021;
+}
+
+.translation-title {
+    font-size: 16px;
+    margin-right: 16px;
+}
+
+#translation-result {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: auto;
+    background-color: var(--bg_bottom_light);
+    padding: 16px;
+    display: none;
+    border-radius: 8px;
+    margin: 8px 16px;
+    box-shadow: 0 4px 12px 0px #00000021;
+    z-index: 9999;
+}
+
+#translation-text {
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+.translate-bar {
+    width: auto;
+    display: flex;
+    text-align: right;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.deepl-plugin-bar-icon {
+    align-items: center;
+    margin: 0px 8px;
+    position: relative;
+}
+
+.deepl-plugin-bar-icon.position-left .deepl-plugin-q-tooltips__content {
+    left: 80%;
+}
+
+.deepl-plugin-bar-icon .deepl-plugin-q-tooltips {
+    align-items: center;
+    display: flex;
+}
+
+.deepl-plugin-bar-icon .deepl-plugin-q-tooltips:hover .deepl-plugin-q-icon {
+    fill: var(--brand_standard);
+}
+
+.deepl-plugin-bar-icon .deepl-plugin-q-tooltips:hover .deepl-plugin-q-tooltips__content {
+    transition-delay: 0.2s;
+    visibility: visible;
+}
+
+.deepl-plugin-bar-icon .deepl-plugin-q-icon {
+    fill: var(--icon_primary);
+    width: 20.5px;
+    height: 20px;
+}
+
+.deepl-plugin-bar-icon .deepl-plugin-q-tooltips__content {
+    position: relative;
+    left: 50%;
+    transform: translateY(30px) translateX(-50%);
+    background-clip: padding-box;
+    background-color: var(--bg_top_light);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    box-shadow: var(--shadow_bg_top);
+    position: absolute;
+    visibility: hidden;
+    white-space-collapse: collapse;
+    text-wrap: nowrap;
+    width: fit-content;
+    font-style: inherit;
+    font-weight: inherit;
+    padding: 4px 7px;
+    font-size: 13px;
+    z-index: 3100;
+}

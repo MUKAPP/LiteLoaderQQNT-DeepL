@@ -1,0 +1,22 @@
+{
+  "name": "deepl_plugin",
+  "version": "1.0.0",
+  "description": "将 DeepL 翻译接入你的 QQNT",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MUKAPP/LiteLoaderQQNT-DeepL.git"
+  },
+  "author": "MUKAPP",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MUKAPP/LiteLoaderQQNT-DeepL/issues"
+  },
+  "homepage": "https://github.com/MUKAPP/LiteLoaderQQNT-DeepL#readme",
+  "dependencies": {
+    "@ifyour/deeplx": "^0.1.17"
+  }
+}

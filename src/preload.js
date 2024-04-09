@@ -1,6 +1,8 @@
 // Electron 主进程 与 渲染进程 交互的桥梁
 const { contextBridge, ipcRenderer } = require("electron");
 
+// (alias) function query(params: RequestParams, config?: Config): Promise<ResponseParams>
+// import query
 
 // 在window对象下导出只读对象
 contextBridge.exposeInMainWorld("deepl_plugin", {
@@ -16,5 +18,7 @@ contextBridge.exposeInMainWorld("deepl_plugin", {
         ...args
     ),
     openWeb: (url) =>
-        ipcRenderer.send("LiteLoader.deepl_plugin.openWeb", url)
+        ipcRenderer.send("LiteLoader.deepl_plugin.openWeb", url),
+    queryTranslation: (params) =>
+        ipcRenderer.invoke("LiteLoader.deepl_plugin.queryTranslation", params),
 });

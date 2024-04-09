@@ -50,12 +50,20 @@
 <setting-section data-title="常规" class="enhancement">
     <setting-panel>
         <setting-list data-direction="column">
-            <setting-item data-direction="column">
+            <setting-item data-direction="row">
+                <div>
+                    <setting-text>使用远程翻译服务器</setting-text>
+                    <setting-text data-type="secondary" style="-webkit-line-clamp: initial">默认是在本地直接请求 DeepL，你也可以将 <a href="javascript:void(0);"
+                        onclick="deepl_plugin.openWeb('https://github.com/OwO-Network/DeepLX')">DeepLX</a> 部署在你的服务器上，然后开启此项，使用你的远程翻译服务器。</setting-text>
+                </div>
+                <setting-switch id="use-remote-server"></setting-switch>
+            </setting-item>
+            <setting-item data-direction="column" id="remote-server-settings" style="display: none;">
                 <div>
                     <setting-text>设置 API 地址</setting-text>
-                    <setting-text data-type="secondary" style="-webkit-line-clamp: initial;">默认使用的是由插件作者自己的服务器搭建的 <a href="javascript:void(0);"
+                    <setting-text data-type="secondary" style="-webkit-line-clamp: initial;">这里默认填的是由插件作者自己的服务器搭建的 <a href="javascript:void(0);"
                             onclick="deepl_plugin.openWeb('https://github.com/OwO-Network/DeepLX')">DeepLX</a>，如果使用的人太多可能会被
-                        DeepL 封禁 IP，所以你也可以自行搭建一个 API 服务填入下方</setting-text>
+                        DeepL 封禁 IP，所以推荐自行搭建一个 API 服务填入下方</setting-text>
                     <div class="input-group">
                         <input class="api-input" type="text" spellcheck="false">
                         <div class="ops-btns">

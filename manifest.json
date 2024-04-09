@@ -5,6 +5,7 @@
     "slug": "deepl_plugin",
     "description": "将 DeepL 翻译接入你的 QQNT",
     "version": "1.1.2",
+    "thumb": "./res/translate_FILL0_wght300_GRAD0_opsz24.svg",
     "icon": "./res/icon.webp",
     "authors": [
         {

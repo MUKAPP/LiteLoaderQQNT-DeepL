@@ -2,6 +2,7 @@
 const fs = require("fs");
 const path = require("path");
 const { BrowserWindow, ipcMain, shell } = require("electron");
+const { query } = require("@ifyour/deeplx");
 
 function log(...args) {
     console.log(`[DeepL]`, ...args);
@@ -29,6 +30,7 @@ if (!fs.existsSync(pluginDataPath)) {
 // 判断settings.json是否存在，如果不存在则创建
 if (!fs.existsSync(settingsPath)) {
     fs.writeFileSync(settingsPath, JSON.stringify({
+        "enableRemote": false,
         "host": "https://deepl.mukapp.top",
         "rightTargetLang": "ZH",
         "chatTargetLang": "EN",
@@ -36,6 +38,11 @@ if (!fs.existsSync(settingsPath)) {
 } else {
     const data = fs.readFileSync(settingsPath, "utf-8");
     const config = JSON.parse(data);
+    // 判断后来加入的enableRemote是否存在，如果不存在则添加
+    if (!config.hasOwnProperty("enableRemote")) {
+        config.enableRemote = false;
+        fs.writeFileSync(settingsPath, JSON.stringify(config));
+    }
 }
 
 
@@ -81,5 +88,18 @@ ipcMain.handle(
     "LiteLoader.deepl_plugin.logToMain",
     (event, ...args) => {
         log(...args);
+    }
+);
+
+ipcMain.handle(
+    "LiteLoader.deepl_plugin.queryTranslation",
+    async (event, params) => {
+        try {
+            const response = await query(params);
+            return response;
+        } catch (error) {
+            log(error);
+            return {};
+        }
     }
 );

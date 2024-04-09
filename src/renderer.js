@@ -29,22 +29,35 @@ function observeElement(selector, callback, continuous = false) {
 
 async function translate(text, target, callback) {
     try {
-        log("翻译", text, "为", target);
+        // 获取设置
         const settings = await deepl_plugin.getSettings();
-        const host = settings.host;
-        const res = await fetch(`${host}/translate`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
+        // log("enableRemote", settings.enableRemote);
+
+        if (settings.enableRemote) {
+            log("远程翻译", text, "为", target);
+            const host = settings.host;
+            const res = await fetch(`${host}/translate`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    text: text,
+                    source_lang: "auto",
+                    target_lang: target
+                })
+            });
+            const data = await res.json();
+            callback(data);
+        } else {
+            log("本地翻译", text, "为", target);
+            // 使用本地翻译
+            const data = await deepl_plugin.queryTranslation({
                 text: text,
-                source_lang: "auto",
                 target_lang: target
-            })
-        });
-        const data = await res.json();
-        callback(data);
+            });
+            callback(data);
+        }
     } catch (error) {
         log("[翻译错误]", error);
         callback({
@@ -54,6 +67,36 @@ async function translate(text, target, callback) {
     }
 }
 
+function barIcon(iconPath, innerText, clickEvent, mouseEnterEvent, mouseLeaveEvent) {
+    const qTooltips = document.createElement("div");
+    const qTooltipsContent = document.createElement("div");
+    const icon = document.createElement("i");
+    const barIcon = document.createElement("div");
+
+    barIcon.classList.add("deepl-plugin-bar-icon");
+    barIcon.appendChild(qTooltips);
+
+    qTooltips.classList.add("deepl-plugin-q-tooltips");
+    qTooltips.addEventListener("click", clickEvent);
+    if (mouseEnterEvent)
+        barIcon.addEventListener("mouseenter", mouseEnterEvent);
+    if (mouseLeaveEvent)
+        barIcon.addEventListener("mouseleave", mouseLeaveEvent);
+    qTooltips.appendChild(icon);
+    qTooltips.appendChild(qTooltipsContent);
+
+    qTooltipsContent.classList.add("deepl-plugin-q-tooltips__content");
+    qTooltipsContent.innerText = innerText;
+
+    icon.classList.add("deepl-plugin-q-icon");
+    fetch(`local:///${plugin_path}/${iconPath}`)
+        .then(response => response.text())
+        .then(data => {
+            icon.innerHTML = data;
+        });
+
+    return barIcon;
+}
 
 // 页面加载完成时触发
 let chatTranslating = false;
@@ -99,10 +142,13 @@ observeElement('#ml-root .ml-list', function () {
             const item = tempEl.firstChild;
             item.id = "deepl-translate";
             if (item.querySelector(".q-icon")) {
-                item.querySelector(".q-icon").innerHTML = `
-                                    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802"></path>
-                                    </svg>`;
+                const iconPath = `local:///${plugin_path}/res/translate_FILL0_wght300_GRAD-25_opsz24.svg`;
+
+                fetch(iconPath)
+                    .then(response => response.text())
+                    .then(data => {
+                        item.querySelector(".q-icon").innerHTML = data;
+                    });
             }
             if (messageEl.querySelector("#deepl-divider")) {
                 // 如果已经翻译过，则显示撤销翻译
@@ -181,44 +227,10 @@ observeElement('#ml-root .ml-list', function () {
 
 // -- 聊天框翻译 -- //
 observeElement('.chat-input-area .ck-editor', function () {
-    const style = document.createElement("style");
-    style.innerHTML = `
-        #deepl-divider {
-            background: #00000021;
-        }
-        
-        .translation-title {
-            font-size: 16px;
-            margin-right: 16px;
-        }
-
-        #translation-result {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: auto;
-            background-color: var(--bg_bottom_light);
-            padding: 16px;
-            display: none;
-            border-radius: 8px;
-            margin: 8px 16px;
-            box-shadow: 0 4px 12px 0px #00000021;
-            z-index: 9999;
-        }
-        
-        #translation-text {
-            font-size: 14px;
-            margin-top: 8px;
-        }
-
-        .translate-bar {
-            width: auto;
-            display: flex;
-            text-align: right;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-        }`;
+    // 插入res/style.css
+    const style = document.createElement('link');
+    style.rel = 'stylesheet';
+    style.href = `local:///${plugin_path}/src/style.css`;
     document.head.appendChild(style);
 
     const translationResult = document.createElement("div");
@@ -297,10 +309,6 @@ observeElement('.chat-input-area .ck-editor', function () {
         hideTranslationResult();
     });
 
-    const icon = `<svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 01-3.827-5.802"></path>
-</svg>`
-
     observeElement(".chat-func-bar", function () {
         // 获取消息栏的左侧的第一个图标
         const iconBarLeft = document.querySelector(".chat-func-bar").firstElementChild;
@@ -310,19 +318,8 @@ observeElement('.chat-input-area .ck-editor', function () {
             return;
         }
 
-        // 复制 iconBarLeft 的第一个子元素
-        const barIcon = iconBarLeft.firstElementChild.cloneNode(true);
-        // 替换 id
-        barIcon.querySelector("#id-func-bar-expression").id = "deepl-bar-icon";
-        // 替换图标
-        barIcon.querySelector("svg").outerHTML = icon;
-        // 设置 aria-label
-        barIcon.querySelector("#deepl-bar-icon").setAttribute("aria-label", "翻译");
-        // 添加到 iconBarLeft
-        iconBarLeft.appendChild(barIcon);
-
-        // 给 barIcon 添加点击事件
-        barIcon.addEventListener("click", async () => {
+        // 添加 deepl-bar-icon
+        const baricon = barIcon("res/translate_FILL0_wght300_GRAD-25_opsz24.svg", "翻译", async () => {
             if (chatTranslating) {
                 return;
             }
@@ -352,6 +349,9 @@ observeElement('.chat-input-area .ck-editor', function () {
             });
 
         });
+
+        // 添加到 iconBarLeft
+        iconBarLeft.appendChild(baricon);
     }, true); // 点击群助手后 chat-func-bar 会消失，再点群聊才会出现，所以需要持续监听
 
 });
@@ -363,20 +363,36 @@ export const onSettingWindowCreated = async view => {
 
         view.innerHTML = await (await fetch(html_file_path)).text();
 
-        // 添加插件图标
-        document.querySelectorAll(".nav-item.liteloader").forEach((node) => {
-            // 本插件图标
-            if (node.textContent === "DeepL") {
-                node.querySelector(".q-icon").innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" stroke="currentColor" fill="currentColor"><path d="m584.922-222.001-38.231 103.154q-3.231 8.307-10.731 13.576-7.5 5.27-16.807 5.27-15.384 0-24.615-12.654-9.231-12.654-3.154-27.653l155.462-401.231q3.846-8.307 11.154-13.384Q665.307-560 674.23-560h22.307q8.923 0 16.23 5.077 7.308 5.077 11.154 13.384l155.462 401.846q6.077 14.384-2.846 27.038t-24.307 12.654q-9.923 0-17.115-5.27-7.193-5.269-11.039-14.192l-38.231-102.538H584.922ZM359.307-416.386 181.461-238.77q-8.307 8.692-20.576 9-12.269.307-21.577-9-8.692-8.692-8.692-21.076 0-12.385 8.692-21.077l177.847-178.231q-34.616-35-65.808-83.077-31.193-48.077-51.346-97.769h63.614q17.307 36.307 42.115 72.616 24.808 36.308 53.577 66.077 42.617-43 80.617-104.424 38-61.423 53.692-114.269H97.694q-12.77 0-21.385-8.615-8.615-8.615-8.615-21.384t8.615-21.384q8.616-8.616 21.385-8.616H330v-34.615q0-12.768 8.615-21.384 8.615-8.615 21.384-8.615t21.384 8.615q8.615 8.616 8.615 21.384v34.615h232.307q12.769 0 21.384 8.616 8.616 8.615 8.616 21.384t-8.616 21.384Q635.075-720 622.306-720h-67.922q-19.462 67.384-62.038 140.884-42.577 73.5-90.886 121.193l98.693 101.077-22.692 61.614-118.154-121.154Zm244.845 141.309h162.463l-81.231-218.232-81.232 218.232Z"/></svg>`;
-            }
-        });
-
         // 获取设置
         const settings = await deepl_plugin.getSettings();
 
+        const useRemoteServer = view.querySelector("#use-remote-server");
         const api_input = view.querySelector(".deepl_plugin .api-input");
         const reset = view.querySelector(".deepl_plugin .reset");
         const apply = view.querySelector(".deepl_plugin .apply");
+
+        // 设置默认值
+        const remoteServerSettings = view.querySelector("#remote-server-settings");
+        if (settings.enableRemote) {
+            useRemoteServer.setAttribute("is-active", "");
+            remoteServerSettings.style.display = "block";
+        } else {
+            useRemoteServer.removeAttribute("is-active");
+            remoteServerSettings.style.display = "none";
+        }
+        useRemoteServer.addEventListener("click", (event) => {
+            const isActive = event.currentTarget.hasAttribute("is-active");
+            if (isActive) {
+                event.currentTarget.removeAttribute("is-active");
+                settings.enableRemote = false;
+                remoteServerSettings.style.display = "none";
+            } else {
+                event.currentTarget.setAttribute("is-active", "");
+                settings.enableRemote = true;
+                remoteServerSettings.style.display = "block";
+            }
+            deepl_plugin.setSettings(settings);
+        });
 
         // 设置默认值
         api_input.value = settings.host;
