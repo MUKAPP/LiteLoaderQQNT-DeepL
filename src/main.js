@@ -1,7 +1,7 @@
 // 运行在 Electron 主进程 下的插件入口
 const fs = require("fs");
 const path = require("path");
-const { BrowserWindow, ipcMain, shell } = require("electron");
+const { BrowserWindow, ipcMain, shell, net } = require("electron");
 const { query } = require("@ifyour/deeplx");
 
 function log(...args) {
@@ -17,6 +17,25 @@ function watchSettingsChange(webContents, settingsPath) {
 
 function openWeb(url) {
     shell.openExternal(url);
+}
+
+function fetchData(url) {
+    return new Promise((resolve, reject) => {
+        const request = net.request(url);
+        request.on("response", response => {
+            let data = "";
+            response.on("data", chunk => {
+                data += chunk;
+            });
+            response.on("end", () => {
+                resolve(data);
+            });
+        });
+        request.on("error", error => {
+            reject(error);
+        });
+        request.end();
+    });
 }
 
 // 加载插件时触发
@@ -103,3 +122,7 @@ ipcMain.handle(
         }
     }
 );
+
+ipcMain.handle("LiteLoader.deepl_plugin.fetchData", (event, url) => {
+    return fetchData(url);
+});
