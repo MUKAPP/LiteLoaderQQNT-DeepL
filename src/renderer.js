@@ -478,6 +478,12 @@ export const onSettingWindowCreated = async view => {
                 console.error(error);
             });
 
+        // tg 频道
+        const tgChannel = view.querySelector("#deepl-tg-channel");
+        tgChannel.addEventListener("click", () => {
+            deepl_plugin.openWeb("https://t.me/MUKAPP_Personal");
+        });
+
     } catch (error) {
         log("[设置页面错误]", error);
     }
