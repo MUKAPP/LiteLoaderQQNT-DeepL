@@ -356,6 +356,23 @@ observeElement('.chat-input-area .ck-editor', function () {
 
 });
 
+function compareVersions(v1, v2) {
+    const parts1 = v1.split('.').map(Number);
+    const parts2 = v2.split('.').map(Number);
+
+    for (let i = 0; i < parts1.length; i++) {
+        if (parts2.length === i) {
+            return 1;
+        }
+
+        if (parts1[i] !== parts2[i]) {
+            return parts1[i] > parts2[i] ? 1 : -1;
+        }
+    }
+
+    return parts1.length === parts2.length ? 0 : -1;
+}
+
 // 打开设置界面时触发
 export const onSettingWindowCreated = async view => {
     try {
