@@ -14,6 +14,8 @@ MUK's TG channel: [MUKAPP](https://t.me/MUKAPP_Personal)
 - [LiteLoaderQQNT-DeepL](#liteloaderqqnt-deepl)
   - [Target language codes](#target-language-codes)
   - [Screenshots](#screenshots)
+  - [Installation Method](#installation-method)
+    - [Manual Installation](#manual-installation)
   - [Star History](#star-history)
 
 ## Target language codes
@@ -55,6 +57,13 @@ Excerpted from the official DeepL documentation:
 
 ## Screenshots
 ![Screenshot](./res/screenshots/1.png)
+
+## Installation Method
+
+### Manual Installation
+
+Unzip the downloaded Zip file, move the unzipped folder to `LiteLoaderQQNT/plugins/` , and restart QQ.\
+（(If after unzipping it's not a single folder, but several folders and files, please create a new folder, put the unzipped folders and files into it, and then move it to the above path)
 
 ## Star History
 <picture>

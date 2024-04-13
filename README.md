@@ -14,6 +14,8 @@ MUK 的 TG 频道：[MUKAPP](https://t.me/MUKAPP_Personal)
 - [LiteLoaderQQNT-DeepL](#liteloaderqqnt-deepl)
   - [目标语言代号](#目标语言代号)
   - [截图](#截图)
+  - [安装方法](#安装方法)
+    - [手动安装](#手动安装)
   - [Star History](#star-history)
 
 ## 目标语言代号
@@ -55,6 +57,13 @@ MUK 的 TG 频道：[MUKAPP](https://t.me/MUKAPP_Personal)
 
 ## 截图
 ![截图](./res/screenshots/1.png)
+
+## 安装方法
+
+### 手动安装
+
+将下载的 Zip 文件解压，解压出的文件夹移动至 `LiteLoaderQQNT/plugins/` 内，重启 QQ 即可\
+（如果解压之后不是一个文件夹，而是几个文件夹和几个文件，那么请创建一个文件夹，将解压出来的文件夹和文件放进去，然后再移动到上述路径内）
 
 ## Star History
 <picture>
