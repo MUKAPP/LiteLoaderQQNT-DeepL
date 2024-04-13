@@ -310,15 +310,15 @@ observeElement('.chat-input-area .ck-editor', function () {
     });
 
     observeElement(".chat-func-bar", function () {
-        // 获取消息栏的左侧的第一个图标
+        // 获取消息栏左侧的图标栏
         const iconBarLeft = document.querySelector(".chat-func-bar").firstElementChild;
 
-        // 判断是否已经添加过 deepl-bar-icon
-        if (iconBarLeft.querySelector("#deepl-bar-icon")) {
+        // 判断是否已经添加过 deepl-plugin-bar-icon
+        if (iconBarLeft.querySelector(".deepl-plugin-bar-icon")) {
             return;
         }
 
-        // 添加 deepl-bar-icon
+        // 添加 deepl-plugin-bar-icon
         const baricon = barIcon("res/translate_FILL0_wght300_GRAD-25_opsz24_origin.svg", "翻译", async () => {
             if (chatTranslating) {
                 return;
