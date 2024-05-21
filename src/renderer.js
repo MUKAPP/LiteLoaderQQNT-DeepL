@@ -131,15 +131,43 @@ observeElement('#ml-root .ml-list', function () {
         }
         const qContextMenu = document.querySelector(".q-context-menu");
         if (qContextMenu && messageEl) {
-            log('右键菜单弹出', qContextMenu);
+            log('右键菜单弹出', qContextMenu.outerHTML);
             // 判断 message-content 是否含有文本
             log(messageEl.querySelector(".message-content").innerText);
             if (!messageEl.querySelector(".message-content").innerText) {
                 return;
             }
-            const tempEl = document.createElement("div");
-            tempEl.innerHTML = document.querySelector(`.q-context-menu :not([disabled="true"])`).outerHTML.replace(/<!---->/g, "");
-            const item = tempEl.firstChild;
+            // 创建一个临时元素用于存放克隆的元素
+            const tempEl = document.createElement('div');
+
+            // 获取第一个未被禁用的 `q-context-menu-item`，并过滤掉 `.menu-stickers-wrapper`
+            const firstEnabledMenuItem = document.querySelector('.q-context-menu .q-context-menu-item:not([disabled="true"])');
+
+            let item;
+            if (firstEnabledMenuItem) {
+                // 将克隆的元素放入临时元素
+                tempEl.innerHTML = firstEnabledMenuItem.outerHTML.replace(/<!---->/g, "");
+                item = tempEl.firstChild;
+
+                // 检查并跳过 `.menu-stickers-wrapper`
+                while (item && item.classList.contains('menu-stickers-wrapper')) {
+                    item = item.nextElementSibling;
+                }
+
+                // 如果找到有效的 `q-context-menu-item`，执行需要的操作
+                if (item && item.classList.contains('q-context-menu-item')) {
+                    console.log('Cloned item:', item);
+                    // 在此处执行需要的操作，例如插入到DOM中或进行其他处理
+                } else {
+                    console.log('No valid q-context-menu-item found.');
+                }
+            } else {
+                console.log('No enabled q-context-menu-item found.');
+            }
+
+
+            log("右键菜单项", item.outerHTML);
+
             item.id = "deepl-translate";
             if (item.querySelector(".q-icon")) {
                 const iconPath = `local:///${plugin_path}/res/translate_FILL0_wght300_GRAD-25_opsz24.svg`;
