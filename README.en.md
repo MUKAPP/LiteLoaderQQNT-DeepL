@@ -14,7 +14,9 @@ MUK's TG channel: [MUKAPP](https://t.me/MUKAPP_Personal)
 - [LiteLoaderQQNT-DeepL](#liteloaderqqnt-deepl)
   - [Target language codes](#target-language-codes)
   - [Screenshots](#screenshots)
-  - [Installation Method](#installation-method)
+  - [Installation Methods](#installation-methods)
+    - [Viewing Plugin Lists](#viewing-plugin-lists)
+    - [PluginInstaller](#plugininstaller)
     - [Manual Installation](#manual-installation)
   - [Star History](#star-history)
 
@@ -58,12 +60,21 @@ Excerpted from the official DeepL documentation:
 ## Screenshots
 ![Screenshot](./res/screenshots/1.png)
 
-## Installation Method
+## Installation Methods
+
+### Viewing Plugin Lists
+
+Install the [Plugin List Viewer](https://github.com/ltxhhz/LL-plugin-list-viewer) plugin. Open the corresponding settings page, locate this plugin, and click **Install** - **Use Release Package**. After installation, restart.
+
+### PluginInstaller
+
+Install the [PluginInstaller](https://github.com/xinyihl/LiteLoaderQQNT-PluginInstaller) plugin. Open the corresponding settings page, and in the plugin installation input box, enter `https://raw.githubusercontent.com/MUKAPP/LiteLoaderQQNT-DeepL/main/manifest.json`, then click the OK button.\
+Alternatively, you can also install the [Protocio](https://github.com/PRO-2684/protocio) plugin simultaneously, then click [this link](https://mukapp.github.io/LiteLoaderQQNT-DeepL/res/protocio-install.html) to directly invoke PluginInstaller to install the plugin.
 
 ### Manual Installation
 
-Unzip the downloaded Zip file, move the unzipped folder to `LiteLoaderQQNT/plugins/` , and restart QQ.\
-（(If after unzipping it's not a single folder, but several folders and files, please create a new folder, put the unzipped folders and files into it, and then move it to the above path)
+Unzip the downloaded Zip file. Move the extracted folder to `LiteLoaderQQNT directory/plugins/`. Restart QQ to apply changes.\
+(If after unzipping it's not a single folder but several folders and files, then please create a folder, put the extracted folders and files into it, and then move it to the aforementioned path.)
 
 ## Star History
 <picture>
