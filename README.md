@@ -15,6 +15,7 @@ MUK 的 TG 频道：[MUKAPP](https://t.me/MUKAPP_Personal)
   - [目标语言代号](#目标语言代号)
   - [截图](#截图)
   - [安装方法](#安装方法)
+    - [PluginInstaller](#plugininstaller)
     - [手动安装](#手动安装)
   - [Star History](#star-history)
 
@@ -59,6 +60,11 @@ MUK 的 TG 频道：[MUKAPP](https://t.me/MUKAPP_Personal)
 ![截图](./res/screenshots/1.png)
 
 ## 安装方法
+
+### PluginInstaller
+
+安装 [PluginInstaller](https://github.com/xinyihl/LiteLoaderQQNT-PluginInstaller) 插件，打开对应设置页面，在安装插件输入框内输入 `https://raw.githubusercontent.com/MUKAPP/LiteLoaderQQNT-DeepL/main/manifest.json`，点击确定按钮\
+也可以同时安装 [Protocio](https://github.com/PRO-2684/protocio) 插件，然后点击 [该链接](llqqnt://plugininstaller/MUKAPP/LiteLoaderQQNT-DeepL/main/manifest.json) 直接拉起 PluginInstaller 安装插件
 
 ### 手动安装
 
