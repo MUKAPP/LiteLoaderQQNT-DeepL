@@ -500,7 +500,7 @@ export const onSettingWindowCreated = async view => {
             .then(({ url, content }) => {
                 const versionMatch = content.match(/\/releases\/tag\/v(\d+\.\d+\.\d+)/);
                 const urlMatch = content.match(/https:\/\/github\.com\/[\w-]+\/[\w-]+\/releases\/tag\/v\d+\.\d+\.\d+/);
-                log("urlMatch",urlMatch[0]);
+                log("urlMatch", urlMatch[0]);
                 if (versionMatch) {
                     const new_version = versionMatch[1];
                     log("[版本]", "最新版本", new_version);
