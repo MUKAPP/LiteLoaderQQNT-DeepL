@@ -15,6 +15,7 @@ MUK 的 TG 频道：[MUKAPP](https://t.me/MUKAPP_Personal)
   - [目标语言代号](#目标语言代号)
   - [截图](#截图)
   - [安装方法](#安装方法)
+    - [插件列表查看](#插件列表查看)
     - [PluginInstaller](#plugininstaller)
     - [手动安装](#手动安装)
   - [Star History](#star-history)
@@ -61,14 +62,18 @@ MUK 的 TG 频道：[MUKAPP](https://t.me/MUKAPP_Personal)
 
 ## 安装方法
 
+### 插件列表查看
+
+安装 [插件列表查看](https://github.com/ltxhhz/LL-plugin-list-viewer) 插件，打开对应设置页面，找到本插件，点击 **安装** - **使用 Release 包**，安装完成之后重启
+
 ### PluginInstaller
 
 安装 [PluginInstaller](https://github.com/xinyihl/LiteLoaderQQNT-PluginInstaller) 插件，打开对应设置页面，在安装插件输入框内输入 `https://raw.githubusercontent.com/MUKAPP/LiteLoaderQQNT-DeepL/main/manifest.json`，点击确定按钮\
-也可以同时安装 [Protocio](https://github.com/PRO-2684/protocio) 插件，然后点击 [该链接](https://mukapp.github.io/LiteLoaderQQNT-DeepL/res/protocio-install.html) 直接拉起 PluginInstaller 安装插件
+或者也可以同时安装 [Protocio](https://github.com/PRO-2684/protocio) 插件，然后点击 [该链接](https://mukapp.github.io/LiteLoaderQQNT-DeepL/res/protocio-install.html) 直接拉起 PluginInstaller 安装插件
 
 ### 手动安装
 
-将下载的 Zip 文件解压，解压出的文件夹移动至 `LiteLoaderQQNT/plugins/` 内，重启 QQ 即可\
+将下载的 Zip 文件解压，解压出的文件夹移动至 `LiteLoaderQQNT目录/plugins/` 内，重启 QQ 即可\
 （如果解压之后不是一个文件夹，而是几个文件夹和几个文件，那么请创建一个文件夹，将解压出来的文件夹和文件放进去，然后再移动到上述路径内）
 
 ## Star History
