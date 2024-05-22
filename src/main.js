@@ -15,25 +15,31 @@ function watchSettingsChange(webContents, settingsPath) {
     }, 100));
 }
 
-function openWeb(url) {
-    shell.openExternal(url);
-}
-
 function fetchData(url) {
     return new Promise((resolve, reject) => {
-        const request = net.request(url);
-        request.on("response", response => {
-            let data = "";
-            response.on("data", chunk => {
+        const request = net.request({
+            method: 'GET',
+            url: url,
+            redirect: 'follow' // 处理重定向
+        });
+
+        request.on('response', (response) => {
+            const finalUrl = response.headers.location || response.url;
+            let data = '';
+
+            response.on('data', (chunk) => {
                 data += chunk;
             });
-            response.on("end", () => {
-                resolve(data);
+
+            response.on('end', () => {
+                resolve({ url: finalUrl, content: data });
             });
         });
-        request.on("error", error => {
+
+        request.on('error', (error) => {
             reject(error);
         });
+
         request.end();
     });
 }
@@ -97,10 +103,6 @@ ipcMain.handle(
             log(error);
         }
     }
-);
-
-ipcMain.on("LiteLoader.deepl_plugin.openWeb", (event, ...message) =>
-    openWeb(...message)
 );
 
 ipcMain.handle(

@@ -156,95 +156,92 @@ observeElement('#ml-root .ml-list', function () {
 
                 // 如果找到有效的 `q-context-menu-item`，执行需要的操作
                 if (item && item.classList.contains('q-context-menu-item')) {
-                    console.log('Cloned item:', item);
                     // 在此处执行需要的操作，例如插入到DOM中或进行其他处理
-                } else {
-                    console.log('No valid q-context-menu-item found.');
-                }
-            } else {
-                console.log('No enabled q-context-menu-item found.');
-            }
+                    log("右键菜单项", item.outerHTML);
+                    item.id = "deepl-translate";
+                    if (item.querySelector(".q-icon")) {
+                        const iconPath = `local:///${plugin_path}/res/translate_FILL0_wght300_GRAD-25_opsz24.svg`;
 
-
-            log("右键菜单项", item.outerHTML);
-
-            item.id = "deepl-translate";
-            if (item.querySelector(".q-icon")) {
-                const iconPath = `local:///${plugin_path}/res/translate_FILL0_wght300_GRAD-25_opsz24.svg`;
-
-                fetch(iconPath)
-                    .then(response => response.text())
-                    .then(data => {
-                        item.querySelector(".q-icon").innerHTML = data;
-                    });
-            }
-            if (messageEl.querySelector("#deepl-divider")) {
-                // 如果已经翻译过，则显示撤销翻译
-                if (item.className.includes("q-context-menu-item__text")) {
-                    item.innerText = "撤销翻译";
-                } else {
-                    item.querySelector(".q-context-menu-item__text").innerText = "撤销翻译";
-                }
-                item.addEventListener("click", async () => {
-                    qContextMenu.remove();
-                    // 获取 messageEl 的子元素 message-content
-                    const messageContent = messageEl.querySelector(".message-content");
-                    // 删除 deepl-divider
-                    messageContent.removeChild(messageEl.querySelector("#deepl-divider"));
-                    // 删除 deepl-result
-                    messageContent.removeChild(messageEl.querySelector("#deepl-result"));
-                });
-            } else {
-                if (item.className.includes("q-context-menu-item__text")) {
-                    item.innerText = "翻译";
-                } else {
-                    item.querySelector(".q-context-menu-item__text").innerText = "翻译";
-                }
-                item.addEventListener("click", async () => {
-                    qContextMenu.remove();
-                    // 获取 messageEl 的文本内容
-                    const needTransText = messageEl.innerText;
-
-                    // 获取 messageEl 的子元素 message-content
-                    const messageContent = messageEl.querySelector(".message-content");
-                    // 判断是否含有 .lite-tools-slot.embed-slot
-                    if (messageEl.querySelector(".lite-tools-slot.embed-slot")) {
-                        // 在 .lite-tools-slot.embed-slot 的前面插入一条分割线
-                        messageContent.querySelector(".lite-tools-slot.embed-slot").insertAdjacentHTML("beforebegin", `<div id="deepl-divider" style="height: 4px;width: auto;margin-top: 8px;margin-bottom: 8px;border-radius: 2px;margin-left: 30%;margin-right: 30%;"></div>`);
-                        // 然后插入 span class="text-element"，在这个 span 中插入正在翻译...
-                        messageContent.querySelector(".lite-tools-slot.embed-slot").insertAdjacentHTML("beforebegin", `<span id="deepl-result" class='text-element'>正在翻译...</span>`);
-                    } else {
-                        // 在 messageContent 的最后插入一条分割线
-                        messageContent.insertAdjacentHTML("beforeend", `<div id="deepl-divider" style="height: 4px;width: auto;margin-top: 8px;margin-bottom: 8px;border-radius: 2px;margin-left: 30%;margin-right: 30%;"></div>`);
-                        // 然后插入 span class="text-element"，在这个 span 中插入正在翻译...
-                        messageContent.insertAdjacentHTML("beforeend", `<span id="deepl-result" class='text-element'>正在翻译...</span>`);
+                        fetch(iconPath)
+                            .then(response => response.text())
+                            .then(data => {
+                                item.querySelector(".q-icon").innerHTML = data;
+                            });
                     }
-
-                    // 翻译
-                    const settings = await deepl_plugin.getSettings();
-                    const targetLang = settings.rightTargetLang;
-                    translate(needTransText, targetLang, function (data) {
-                        if (data.code === 200) {
-                            // 获取翻译结果
-                            const result = data.data;
-                            // 判断翻译结果不为空
-                            if (result) {
-                                // 获取 messageContent 里的 deepl-result，把里面的内容替换为 span class="text-normal"，显示翻译结果
-                                messageContent.querySelector("#deepl-result").innerHTML = `<span class="text-normal"></span>`;
-                                // 获取messageContent里的 deepl-result 的 text-normal，把里面的内容替换为翻译结果
-                                messageContent.querySelector("#deepl-result .text-normal").innerText = result;
-                            } else {
-                                // 如果翻译结果为空，则显示翻译失败
-                                messageContent.querySelector("#deepl-result").innerText = `翻译失败，翻译结果为空`;
-                            }
+                    if (messageEl.querySelector("#deepl-divider")) {
+                        // 如果已经翻译过，则显示撤销翻译
+                        if (item.className.includes("q-context-menu-item__text")) {
+                            item.innerText = "撤销翻译";
                         } else {
-                            // 如果翻译失败，则显示翻译失败
-                            messageContent.querySelector("#deepl-result").innerText = `翻译失败：` + data.message;
+                            item.querySelector(".q-context-menu-item__text").innerText = "撤销翻译";
                         }
-                    });
-                });
+                        item.addEventListener("click", async () => {
+                            qContextMenu.remove();
+                            // 获取 messageEl 的子元素 message-content
+                            const messageContent = messageEl.querySelector(".message-content");
+                            // 删除 deepl-divider
+                            messageContent.removeChild(messageEl.querySelector("#deepl-divider"));
+                            // 删除 deepl-result
+                            messageContent.removeChild(messageEl.querySelector("#deepl-result"));
+                        });
+                    } else {
+                        if (item.className.includes("q-context-menu-item__text")) {
+                            item.innerText = "翻译";
+                        } else {
+                            item.querySelector(".q-context-menu-item__text").innerText = "翻译";
+                        }
+                        item.addEventListener("click", async () => {
+                            qContextMenu.remove();
+                            // 获取 messageEl 的文本内容
+                            const needTransText = messageEl.innerText;
+
+                            // 获取 messageEl 的子元素 message-content
+                            const messageContent = messageEl.querySelector(".message-content");
+                            // 判断是否含有 .lite-tools-slot.embed-slot
+                            if (messageEl.querySelector(".lite-tools-slot.embed-slot")) {
+                                // 在 .lite-tools-slot.embed-slot 的前面插入一条分割线
+                                messageContent.querySelector(".lite-tools-slot.embed-slot").insertAdjacentHTML("beforebegin", `<div id="deepl-divider" style="height: 4px;width: auto;margin-top: 8px;margin-bottom: 8px;border-radius: 2px;margin-left: 30%;margin-right: 30%;"></div>`);
+                                // 然后插入 span class="text-element"，在这个 span 中插入正在翻译...
+                                messageContent.querySelector(".lite-tools-slot.embed-slot").insertAdjacentHTML("beforebegin", `<span id="deepl-result" class='text-element'>正在翻译...</span>`);
+                            } else {
+                                // 在 messageContent 的最后插入一条分割线
+                                messageContent.insertAdjacentHTML("beforeend", `<div id="deepl-divider" style="height: 4px;width: auto;margin-top: 8px;margin-bottom: 8px;border-radius: 2px;margin-left: 30%;margin-right: 30%;"></div>`);
+                                // 然后插入 span class="text-element"，在这个 span 中插入正在翻译...
+                                messageContent.insertAdjacentHTML("beforeend", `<span id="deepl-result" class='text-element'>正在翻译...</span>`);
+                            }
+
+                            // 翻译
+                            const settings = await deepl_plugin.getSettings();
+                            const targetLang = settings.rightTargetLang;
+                            translate(needTransText, targetLang, function (data) {
+                                if (data.code === 200) {
+                                    // 获取翻译结果
+                                    const result = data.data;
+                                    // 判断翻译结果不为空
+                                    if (result) {
+                                        // 获取 messageContent 里的 deepl-result，把里面的内容替换为 span class="text-normal"，显示翻译结果
+                                        messageContent.querySelector("#deepl-result").innerHTML = `<span class="text-normal"></span>`;
+                                        // 获取messageContent里的 deepl-result 的 text-normal，把里面的内容替换为翻译结果
+                                        messageContent.querySelector("#deepl-result .text-normal").innerText = result;
+                                    } else {
+                                        // 如果翻译结果为空，则显示翻译失败
+                                        messageContent.querySelector("#deepl-result").innerText = `翻译失败，翻译结果为空`;
+                                    }
+                                } else {
+                                    // 如果翻译失败，则显示翻译失败
+                                    messageContent.querySelector("#deepl-result").innerText = `翻译失败：` + data.message;
+                                }
+                            });
+                        });
+                    }
+                    qContextMenu.appendChild(item);
+                } else {
+                    log("未找到有效的 q-context-menu-item");
+                }
+            } else {
+                log("未找到启用的 q-context-menu-item");
             }
-            qContextMenu.appendChild(item);
+
             appended = true;
         }
 
@@ -499,28 +496,40 @@ export const onSettingWindowCreated = async view => {
         const updateButton = view.querySelector("#deepl-settings-go-to-update");
         updateButton.style.display = "none";
 
-        deepl_plugin.fetchData("https://api.github.com/repos/MUKAPP/LiteLoaderQQNT-DeepL/releases/latest")
-            .then((res) => {
-                const response = JSON.parse(res);
-                if (response && response.html_url) {
-                    const new_version = response.html_url.slice(response.html_url.lastIndexOf("/") + 1).replace("v", "");
+        deepl_plugin.fetchData("https://github.com/MUKAPP/LiteLoaderQQNT-DeepL/releases/latest")
+            .then(({ url, content }) => {
+                const versionMatch = content.match(/\/releases\/tag\/v(\d+\.\d+\.\d+)/);
+                const urlMatch = content.match(/https:\/\/github\.com\/[\w-]+\/[\w-]+\/releases\/tag\/v\d+\.\d+\.\d+/);
+                log("urlMatch",urlMatch[0]);
+                if (versionMatch) {
+                    const new_version = versionMatch[1];
                     log("[版本]", "最新版本", new_version);
                     if (compareVersions(new_version, LiteLoader.plugins["deepl_plugin"].manifest.version) > 0) {
                         updateButton.style.display = "block";
-                        updateButton.addEventListener("click", () => {
-                            deepl_plugin.openWeb(response.html_url);
-                        });
                         version.innerHTML += ` <span style="color: #ff4d4f;">(有新版本: ${new_version})</span>`;
+
+                        // 判断 plugininstaller 插件是否存在并启用
+                        if (LiteLoader.plugins["plugininstaller"] && !LiteLoader.plugins["plugininstaller"].disabled) {
+                            updateButton.addEventListener("click", () => {
+                                plugininstaller.updateBySlug("deepl_plugin");
+                            });
+                        } else {
+                            version.innerHTML += "<br>未安装PluginInstaller，安装之后可以一键更新，当前需要手动更新"
+                            updateButton.addEventListener("click", () => {
+                                LiteLoader.api.openExternal(urlMatch[0]);
+                            });
+                        }
                     } else {
                         version.innerHTML += ` (已是最新版本)`;
                     }
                 } else {
                     version.innerHTML += ` (版本更新检查失败)`;
-                    log("版本更新检查失败", response);
+                    log("版本更新检查失败", content);
                 }
             })
             .catch((error) => {
-                console.error(error);
+                version.innerHTML += ` (版本更新检查失败: ${error.message})`;
+                log("版本更新检查失败", error);
             });
 
         // tg 频道

@@ -17,8 +17,6 @@ contextBridge.exposeInMainWorld("deepl_plugin", {
         "LiteLoader.deepl_plugin.logToMain",
         ...args
     ),
-    openWeb: (url) =>
-        ipcRenderer.send("LiteLoader.deepl_plugin.openWeb", url),
     queryTranslation: (params) =>
         ipcRenderer.invoke("LiteLoader.deepl_plugin.queryTranslation", params),
     fetchData: (url) =>
