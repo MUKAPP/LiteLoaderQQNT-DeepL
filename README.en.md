@@ -15,7 +15,7 @@ MUK's TG channel: [MUKAPP](https://t.me/MUKAPP_Personal)
   - [Target language codes](#target-language-codes)
   - [Screenshots](#screenshots)
   - [Installation Methods](#installation-methods)
-    - [Viewing Plugin Lists](#viewing-plugin-lists)
+    - [Plugin Lists Viewer](#plugin-lists-viewer)
     - [PluginInstaller](#plugininstaller)
     - [Manual Installation](#manual-installation)
   - [Star History](#star-history)
@@ -62,7 +62,7 @@ Excerpted from the official DeepL documentation:
 
 ## Installation Methods
 
-### Viewing Plugin Lists
+### Plugin Lists Viewer
 
 Install the [Plugin List Viewer](https://github.com/ltxhhz/LL-plugin-list-viewer) plugin. Open the corresponding settings page, locate this plugin, and click **Install** - **Use Release Package**. After installation, restart.
 
