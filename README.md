@@ -11,6 +11,9 @@ MUK 的 TG 频道：[MUKAPP](https://t.me/MUKAPP_Personal)
 > [!NOTE]  
 > 1.0.8 版本开始最低支持 LiteLoaderQQNT 1.0.0（测试版），1.0.7 及以下支持 1.0.0 以下版本
 
+> [!WARNING]  
+> 该插件目前处于缓慢维护状态，短期内可能不会添加新功能，主要维持其正常运行
+
 - [LiteLoaderQQNT-DeepL](#liteloaderqqnt-deepl)
   - [目标语言代号](#目标语言代号)
   - [截图](#截图)

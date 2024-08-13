@@ -11,6 +11,9 @@ MUK's TG channel: [MUKAPP](https://t.me/MUKAPP_Personal)
 > [!NOTE]  
 > Starting from version 1.0.8, the minimum supported version of LiteLoaderQQNT is 1.0.0 (Beta). Versions 1.0.7 and below support versions below 1.0.0.
 
+> [!WARNING]  
+> This plugin is currently under slow maintenance, and new features may not be added in the short term. The focus is primarily on maintaining its normal operation.
+
 - [LiteLoaderQQNT-DeepL](#liteloaderqqnt-deepl)
   - [Target language codes](#target-language-codes)
   - [Screenshots](#screenshots)
