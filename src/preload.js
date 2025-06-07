@@ -18,4 +18,6 @@ contextBridge.exposeInMainWorld("deepl_plugin", {
         ipcRenderer.invoke("LiteLoader.deepl_plugin.queryTranslation", params),
     fetchData: (url) =>
         ipcRenderer.invoke("LiteLoader.deepl_plugin.fetchData", url),
+    detectLanguage: (text) =>
+        ipcRenderer.invoke("LiteLoader.deepl_plugin.detectLanguage", text),
 });
