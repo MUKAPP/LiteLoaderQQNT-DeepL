@@ -31,7 +31,12 @@ async function translate(text, target, callback) {
     try {
         // 获取设置
         const settings = await deepl_plugin.getSettings();
-        // log("enableRemote", settings.enableRemote);
+
+        // 如果目标语言未指定或为auto，先进行语言检测
+        if (!target || target === 'auto') {
+            target = await deepl_plugin.detectLanguage(text);
+            log("自动检测目标语言:", target);
+        }
 
         if (settings.enableRemote) {
             log("远程翻译", text, "为", target);

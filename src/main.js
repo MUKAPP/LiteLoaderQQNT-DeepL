@@ -3,9 +3,41 @@ const fs = require("fs");
 const path = require("path");
 const { BrowserWindow, ipcMain, shell, net } = require("electron");
 const { query } = require("@ifyour/deeplx");
+const LanguageDetect = require('languagedetect');
+const lngDetector = new LanguageDetect();
 
 function log(...args) {
     console.log(`[DeepL]`, ...args);
+}
+
+// 自动识别语言并选择目标语言
+async function autoDetectTargetLang(text, targetLang) {
+    try {
+        // 如果目标语言不是auto，直接返回指定的目标语言
+        if (targetLang !== 'auto') {
+            return targetLang;
+        }
+
+        // 检测语言
+        const detections = lngDetector.detect(text);
+
+        if (detections && detections.length > 0) {
+            const [lang, confidence] = detections[0];
+
+            // 检查是否为中文
+            if (lang === 'chinese' || lang === 'chi') {
+                return 'EN';
+            } else {
+                return 'ZH';
+            }
+        }
+
+        log("无法检测到语言，默认使用英语");
+        return 'EN';
+    } catch (error) {
+        log("语言检测错误:", error);
+        return 'EN'; // 出错时默认返回英语
+    }
 }
 
 // 监听配置文件修改
@@ -113,9 +145,27 @@ ipcMain.handle(
 );
 
 ipcMain.handle(
+    "LiteLoader.deepl_plugin.detectLanguage",
+    async (event, text) => {
+        try {
+            // 默认使用auto作为目标语言进行检测
+            const targetLang = await autoDetectTargetLang(text, 'auto');
+            return targetLang;
+        } catch (error) {
+            log(error);
+            return 'EN'; // 出错时默认返回英语
+        }
+    }
+);
+
+ipcMain.handle(
     "LiteLoader.deepl_plugin.queryTranslation",
     async (event, params) => {
         try {
+            // 获取目标语言设置
+            const targetLang = await autoDetectTargetLang(params.text, params.target_lang);
+            params.target_lang = targetLang;
+            
             const response = await query(params);
             return response;
         } catch (error) {

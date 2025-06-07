@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/MUKAPP/LiteLoaderQQNT-DeepL#readme",
   "dependencies": {
-    "@ifyour/deeplx": "^0.1.17"
+    "@ifyour/deeplx": "^0.1.17",
+    "languagedetect": "^2.0.0"
   }
 }
